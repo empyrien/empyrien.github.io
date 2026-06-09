@@ -70,6 +70,24 @@
     color: var(--ink-dim);
   }
 
+  .x-handle {
+    display: inline-block;
+    margin-top: 2.75rem;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 0.95rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .x-handle:hover {
+    color: var(--ink);
+    border-bottom-color: var(--hairline);
+  }
+
   @keyframes rise {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -85,6 +103,7 @@
   <h1>Empyrien</h1>
   <div class="rule"></div>
   <p>you found us</p>
+  <a class="x-handle" href="https://x.com/empyrien" target="_blank" rel="noopener">@empyrien</a>
 </main>
 </body>
 </html>
