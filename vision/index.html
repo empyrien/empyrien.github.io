@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vision — Empyrien</title>
+<meta name="description" content="An exploration: the Bahá'í Writings, the pattern of prophecy, and the alignment of artificial intelligence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0e;
+    --bg-raise: #131316;
+    --ink: #e9e4da;
+    --ink-dim: #8a857b;
+    --ink-faint: #5c5850;
+    --hairline: rgba(233, 228, 218, 0.18);
+    --hairline-soft: rgba(233, 228, 218, 0.08);
+    --gold: #c9b07e;
+    --gold-dim: rgba(201, 176, 126, 0.55);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+    font-size: 1.16rem;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: rgba(201, 176, 126, 0.25); }
+
+  a { color: var(--gold); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .3s; }
+  a:hover { border-bottom-color: var(--gold-dim); }
+
+  /* ---------- header ---------- */
+  header {
+    min-height: 72vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 1.5rem 3rem;
+    position: relative;
+  }
+  header::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(233,228,218,0.05), transparent 70%);
+    pointer-events: none;
+  }
+  .wordmark {
+    font-size: 0.85rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 3rem;
+  }
+  .wordmark a { color: inherit; }
+  header h1 {
+    font-weight: 300;
+    font-size: clamp(2rem, 5.4vw, 3.6rem);
+    letter-spacing: 0.06em;
+    max-width: 21ch;
+    line-height: 1.25;
+  }
+  header .sub {
+    margin-top: 2.2rem;
+    font-style: italic;
+    color: var(--ink-dim);
+    max-width: 44ch;
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+  }
+  .rule { width: 3.5rem; height: 1px; background: var(--hairline); margin: 2.25rem auto; }
+
+  /* ---------- nav ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(12,12,14,0.88);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--hairline-soft);
+    border-bottom: 1px solid var(--hairline-soft);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  nav ul {
+    display: flex; gap: 2.2rem; list-style: none;
+    justify-content: center; padding: 0.85rem 1.5rem;
+    white-space: nowrap;
+  }
+  nav a {
+    font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  nav a:hover { color: var(--ink); border-bottom-color: transparent; }
+
+  /* ---------- sections ---------- */
+  main { max-width: 46rem; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+  section { padding-top: 5.5rem; }
+
+  .kicker {
+    font-size: 0.72rem; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--gold-dim); margin-bottom: 1.1rem;
+  }
+  h2 {
+    font-weight: 300; font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+    letter-spacing: 0.03em; line-height: 1.25; margin-bottom: 1.6rem;
+  }
+  h3 {
+    font-weight: 400; font-size: 1.25rem; letter-spacing: 0.04em;
+    margin: 2.2rem 0 0.7rem;
+  }
+  p + p { margin-top: 1rem; }
+
+  .note {
+    font-size: 0.98rem; color: var(--ink-dim); font-style: italic;
+  }
+
+  /* labels */
+  .tag {
+    display: inline-block; font-size: 0.62rem; letter-spacing: 0.24em;
+    text-transform: uppercase; padding: 0.28em 0.85em;
+    border: 1px solid var(--hairline); border-radius: 2em;
+    color: var(--ink-dim); margin-bottom: 1rem; font-style: normal;
+  }
+  .tag.spec { border-color: rgba(201,176,126,0.4); color: var(--gold); }
+
+  /* blockquotes */
+  blockquote {
+    margin: 1.6rem 0; padding: 0.2rem 0 0.2rem 1.4rem;
+    border-left: 1px solid var(--gold-dim);
+    font-style: italic; font-size: 1.13rem; color: var(--ink);
+  }
+  blockquote footer {
+    margin-top: 0.7rem; font-style: normal; font-size: 0.88rem;
+    color: var(--ink-dim); letter-spacing: 0.04em;
+  }
+
+  /* expandable cards */
+  details {
+    border-top: 1px solid var(--hairline-soft);
+    padding: 0;
+  }
+  details:last-of-type { border-bottom: 1px solid var(--hairline-soft); }
+  summary {
+    cursor: pointer; list-style: none;
+    padding: 1.05rem 0.2rem;
+    display: flex; align-items: baseline; gap: 1rem;
+    transition: color .25s;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary:hover { color: var(--gold); }
+  summary .s-title { font-size: 1.14rem; font-weight: 400; letter-spacing: 0.03em; flex: 1; }
+  summary .s-hint { font-size: 0.78rem; color: var(--ink-faint); letter-spacing: 0.14em; text-transform: uppercase; }
+  summary::after {
+    content: "+"; color: var(--ink-faint); font-size: 1.1rem;
+    transition: transform .3s;
+  }
+  details[open] summary::after { transform: rotate(45deg); }
+  .d-body { padding: 0.2rem 0.2rem 1.6rem; }
+  .d-body p { font-size: 1.05rem; }
+  .src {
+    display: block; margin-top: 0.8rem; font-size: 0.85rem;
+    color: var(--ink-dim); letter-spacing: 0.03em;
+  }
+
+  /* taxonomy filter */
+  .filters { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 1.8rem 0 1.2rem; }
+  .filters button {
+    font-family: inherit; font-size: 0.7rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ink-dim);
+    background: none; border: 1px solid var(--hairline-soft);
+    border-radius: 2em; padding: 0.45em 1.1em; cursor: pointer;
+    transition: all .25s;
+  }
+  .filters button:hover { color: var(--ink); border-color: var(--hairline); }
+  .filters button.active { color: var(--gold); border-color: var(--gold-dim); }
+
+  /* principle grid */
+  .p-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--hairline-soft); border: 1px solid var(--hairline-soft); margin-top: 1.6rem; }
+  .p-grid div { background: var(--bg); padding: 1rem 1.1rem; font-size: 0.98rem; color: var(--ink-dim); }
+  .p-grid div strong { display: block; color: var(--ink); font-weight: 400; margin-bottom: 0.15rem; }
+  @media (max-width: 600px) { .p-grid { grid-template-columns: 1fr; } }
+
+  /* fade-in */
+  .fade { opacity: 0; transform: translateY(16px); transition: opacity 1s cubic-bezier(0.22,1,0.36,1), transform 1s cubic-bezier(0.22,1,0.36,1); }
+  .fade.vis { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .fade { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
+
+  /* footer */
+  .site-footer {
+    text-align: center; padding: 4rem 1.5rem 5rem;
+    border-top: 1px solid var(--hairline-soft); margin-top: 5rem;
+  }
+  .site-footer p { color: var(--ink-dim); font-style: italic; font-size: 1rem; }
+  .x-handle {
+    display: inline-block; margin-top: 1.6rem; font-size: 0.9rem;
+    letter-spacing: 0.18em; color: var(--ink-dim);
+  }
+  .x-handle:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark"><a href="/">Empyrien</a></div>
+  <h1>What if the moral code the age of AI is searching for has already been written?</h1>
+  <div class="rule"></div>
+  <p class="sub">An exploration of the Bahá'í Writings, the pattern of prophecy, and the long-term alignment of artificial intelligence. A personal thesis — sourced where it can be, and honest where it speculates.</p>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#thesis">Thesis</a></li>
+    <li><a href="#faith">The Faith</a></li>
+    <li><a href="#prophecy">Prophecy</a></li>
+    <li><a href="#pattern">The Pattern</a></li>
+    <li><a href="#trilemma">The Trilemma</a></li>
+    <li><a href="#numbers">Numbers</a></li>
+    <li><a href="#suddenly">Suddenly</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ==================== THESIS ==================== -->
+<section id="thesis" class="fade">
+  <div class="kicker">The Thesis</div>
+  <h2>Outsourcing a civilization's conscience is not a technical problem.</h2>
+  <p>I hold a theory that has grown more convincing to me over time: that the Writings of Bahá'u'lláh — over a hundred volumes of text revealed in the nineteenth century, centered on the oneness of humanity, world federation, and the harmony of science and religion — are extraordinarily well suited to the problem the twenty-first century now faces: giving artificial intelligence a durable moral core.</p>
+  <p>The AI labs already concede that alignment is, at bottom, a question of <em>which values, written down where</em>. Anthropic aligned its models with a <a href="https://www.anthropic.com/news/claudes-constitution" target="_blank" rel="noopener">written constitution</a> drawing on the Universal Declaration of Human Rights — proof that a value document can sit at the heart of a mind's training. The question of <em>which</em> document, or whose, is wide open. This page lays out why I think a body of Writings that anticipated global unity, prescribed its institutions, and claims divine authorship deserves a seat at that table — and it lets you weigh the evidence yourself.</p>
+  <p class="note">Throughout, established Bahá'í teaching and verifiable history are cited to source. My own speculations are labeled as exactly that. You should not have to guess which is which.</p>
+</section>
+
+<!-- ==================== THE FAITH ==================== -->
+<section id="faith" class="fade">
+  <div class="kicker">Orientation</div>
+  <h2>The Bahá'í Faith, at a glance</h2>
+  <p>Two figures stand at the origin. <strong>The Báb</strong> ("the Gate," Siyyid ʻAlí-Muḥammad, 1819–1850) declared His mission in Shiraz, Persia on the evening of 22 May 1844, announced the imminent coming of "Him Whom God shall make manifest," and was executed by firing squad in 1850. <strong>Bahá'u'lláh</strong> ("the Glory of God," Mírzá Ḥusayn-ʻAlí, 1817–1892) announced in the Garden of Riḍván, Baghdad, in April 1863, that He was that Promised One. The name <em>Bahá</em> became His at the Conference of Badasht in 1848 and was afterward confirmed by the Báb in writing.<a class="src" href="https://reference.bahai.org/en/t/nz/DB/db-35.html" target="_blank" rel="noopener">Nabíl, The Dawn-Breakers, ch. XVI</a></p>
+
+  <div class="filters" id="taxFilters">
+    <button class="active" data-f="all">All</button>
+    <button data-f="hist">Historical</button>
+    <button data-f="uniq">Unique aspects</button>
+    <button data-f="spirit">Spiritual</button>
+  </div>
+
+  <div id="taxonomy">
+    <details data-c="hist">
+      <summary><span class="s-title">An advent expected on two continents</span><span class="s-hint">1844</span></summary>
+      <div class="d-body">
+        <p>In Persia, Shaykh Aḥmad-i-Aḥsá'í and Siyyid Káẓim-i-Rashtí spent decades preparing their students for an imminent divine Advent; it was Siyyid Káẓim's disciples who found the Báb in 1844. In the United States, the Millerite movement — tens of thousands strong — expected the return of Christ in 1843–44 from the prophecies of Daniel.</p>
+        <blockquote>"In Europe and America groups like the Templers and the Millerites believed they had found in the Christian scriptures evidence supporting their conviction that history had ended and the return of Jesus Christ was at hand. A markedly similar ferment developed in the Middle East…"
+        <footer>Bahá'í International Community, <a href="https://www.bahai.org/documents/bic-opi/bahaullah-his-life-and-work" target="_blank" rel="noopener">Bahá'u'lláh (1991 statement)</a></footer></blockquote>
+      </div>
+    </details>
+
+    <details data-c="hist">
+      <summary><span class="s-title">Twin founding moments</span><span class="s-hint">1844 · 1863</span></summary>
+      <div class="d-body">
+        <p>The Declaration of the Báb: the evening of 22 May 1844 in Shiraz (23 May by Bahá'í reckoning, as the day begins at sunset). The Declaration of Bahá'u'lláh: late April 1863, in the garden outside Baghdad later named Riḍván — "Paradise" — on the eve of His exile to Constantinople.</p>
+        <a class="src" href="https://www.bahai.org/the-bab/life-the-bab" target="_blank" rel="noopener">bahai.org — The Life of the Báb · Bahá'u'lláh (BIC statement)</a>
+      </div>
+    </details>
+
+    <details data-c="hist">
+      <summary><span class="s-title">A cycle measured in half a million years</span><span class="s-hint">Duration</span></summary>
+      <div class="d-body">
+        <p>Bahá'ís understand their Faith as concluding the "Prophetic Cycle" — Adam to Muhammad, every religion promising a coming age of peace — and opening the "Cycle of Fulfillment."</p>
+        <blockquote>"From this thou canst imagine the magnitude of the Bahá'í cycle — a cycle that must extend over a period of at least five hundred thousand years."
+        <footer>'Abdu'l-Bahá, quoted in Shoghi Effendi, <a href="https://www.bahai.org/library/authoritative-texts/shoghi-effendi/world-order-bahaullah/7" target="_blank" rel="noopener">The World Order of Bahá'u'lláh</a></footer></blockquote>
+        <p>The Bahá'í dispensation itself is to last at least one thousand years: "Whoso layeth claim to a Revelation direct from God, ere the expiration of a full thousand years, such a man is assuredly a lying imposter." <a class="src" href="https://www.bahai.org/library/authoritative-texts/bahaullah/kitab-i-aqdas/" target="_blank" rel="noopener">Bahá'u'lláh, Kitáb-i-Aqdas ¶37</a></p>
+      </div>
+    </details>
+
+    <details data-c="hist">
+      <summary><span class="s-title">Eighteen Letters of the Living</span><span class="s-hint">First believers</span></summary>
+      <div class="d-body">
+        <p>The Báb declared that "eighteen souls must, in the beginning, spontaneously and of their own accord, accept Me." These first eighteen — who each found Him independently — became the Letters of the Living; with the Báb Himself they formed the first <em>Váḥid</em>, a unit of nineteen. A generation later, Shoghi Effendi designated nineteen Apostles of Bahá'u'lláh. (Compare the Twelve at the time of Christ.)</p>
+        <a class="src" href="https://www.bahai.org/the-bab/life-the-bab" target="_blank" rel="noopener">bahai.org — The Life of the Báb · Shoghi Effendi, God Passes By, ch. I</a>
+      </div>
+    </details>
+
+    <details data-c="uniq">
+      <summary><span class="s-title">Twin Manifestations</span><span class="s-hint">Unique</span></summary>
+      <div class="d-body">
+        <p>The Herald was not merely a forerunner. Bahá'ís hold the Báb to be an independent Manifestation of God — the term the Writings use for the founders of the world's great religious systems.</p>
+        <blockquote>"That the Báb… is fully entitled to rank as one of the self-sufficient Manifestations of God… and exercises all the rights and prerogatives of independent Prophethood, is yet another fundamental verity which the Message of Bahá'u'lláh insistently proclaims."
+        <footer>Shoghi Effendi, <a href="https://www.bahai.org/library/authoritative-texts/shoghi-effendi/world-order-bahaullah/8" target="_blank" rel="noopener">The Dispensation of Bahá'u'lláh</a></footer></blockquote>
+      </div>
+    </details>
+
+    <details data-c="uniq">
+      <summary><span class="s-title">Succession appointed in writing — and no lasting schism</span><span class="s-hint">Unique</span></summary>
+      <div class="d-body">
+        <p>Bahá'u'lláh appointed His son 'Abdu'l-Bahá as Centre of His Covenant in His own written will, the Kitáb-i-'Ahd: "It is incumbent upon the Aghṣán, the Afnán and My Kindred to turn, one and all, their faces towards the Most Mighty Branch." 'Abdu'l-Bahá in turn appointed His grandson Shoghi Effendi as Guardian in His Will and Testament: "He is the expounder of the words of God."</p>
+        <p>Attempts at division occurred — the Will and Testament itself recounts them — but none survived at scale. The institutional phrasing: the Covenant "has preserved the integrity of His Faith, maintained its unity and stimulated its world-wide expansion."</p>
+        <a class="src" href="https://www.bahai.org/library/authoritative-texts/bahaullah/tablets-bahaullah/6" target="_blank" rel="noopener">Kitáb-i-'Ahd · Will and Testament of 'Abdu'l-Bahá · Constitution of the Universal House of Justice</a>
+      </div>
+    </details>
+
+    <details data-c="uniq">
+      <summary><span class="s-title">Authorized interpretation — rendered in English</span><span class="s-hint">Unique</span></summary>
+      <div class="d-body">
+        <p>Revelation came in Persian and Arabic; but its authorized interpretation was fixed, for the first time in religious history, largely in English — through Shoghi Effendi's translations and expositions. The Universal House of Justice, the Faith's elected world body, legislates on matters the Texts leave open, but interpretation is reserved to the appointed Interpreters; the House may not re-interpret them. 'Abdu'l-Bahá: "I am the Interpreter of the Word of God; such is my interpretation."</p>
+        <a class="src" href="https://universalhouseofjustice.bahai.org/constitution/constitution-universal-house-justice" target="_blank" rel="noopener">Constitution of the Universal House of Justice · The Dispensation of Bahá'u'lláh</a>
+      </div>
+    </details>
+
+    <details data-c="uniq">
+      <summary><span class="s-title">Seeds of world governance, planted by the Founder</span><span class="s-hint">Unique</span></summary>
+      <div class="d-body">
+        <p>Bahá'u'lláh Himself ordained the institutions of an elected world order — local, national, and international Houses of Justice, chosen without campaigning or clergy — a governance architecture built for a unified planet, established in scripture rather than improvised afterward. It accepts and unites the religions that came before it rather than superseding them with hostility.</p>
+        <a class="src" href="https://www.bahai.org/library/authoritative-texts/bahaullah/kitab-i-aqdas/" target="_blank" rel="noopener">Kitáb-i-Aqdas · The World Order of Bahá'u'lláh</a>
+      </div>
+    </details>
+
+    <details data-c="spirit">
+      <summary><span class="s-title">One unknowable God; many Daysprings</span><span class="s-hint">Spiritual</span></summary>
+      <div class="d-body">
+        <blockquote>"To every discerning and illumined heart it is evident that God, the unknowable Essence, the Divine Being, is immensely exalted beyond every human attribute…"
+        <footer>Bahá'u'lláh, <a href="https://www.bahai.org/library/authoritative-texts/bahaullah/gleanings-writings-bahaullah/2" target="_blank" rel="noopener">Gleanings XIX</a></footer></blockquote>
+        <p>God is never directly knowable; instead, "These sanctified Mirrors, these Daysprings of ancient glory" — Moses, Krishna, Buddha, Zoroaster, Christ, Muhammad, the Báb, Bahá'u'lláh — perfectly reflect His attributes to humanity. "They only differ in the intensity of their revelation, and the comparative potency of their light." This is <em>progressive revelation</em>: one unfolding curriculum, each lesson tailored to its age, none final.</p>
+      </div>
+    </details>
+
+    <details data-c="spirit">
+      <summary><span class="s-title">One human family</span><span class="s-hint">Spiritual</span></summary>
+      <div class="d-body">
+        <blockquote>"The earth is but one country, and mankind its citizens."
+        <footer>Bahá'u'lláh, <a href="https://www.bahai.org/library/authoritative-texts/bahaullah/gleanings-writings-bahaullah/6" target="_blank" rel="noopener">Gleanings CXVII</a></footer></blockquote>
+        <p>Unity in diversity is the watchword — oneness that preserves, rather than erases, the strengths of peoples and cultures. All prejudice must go: "All prejudices, whether of religion, race, politics or nation, must be renounced, for these prejudices have caused the world's sickness." <a class="src" href="https://www.bahai.org/library/authoritative-texts/abdul-baha/paris-talks/5" target="_blank" rel="noopener">'Abdu'l-Bahá, Paris Talks</a></p>
+      </div>
+    </details>
+
+    <details data-c="spirit">
+      <summary><span class="s-title">Science and religion, two wings</span><span class="s-hint">Spiritual</span></summary>
+      <div class="d-body">
+        <blockquote>"We may think of science as one wing and religion as the other; a bird needs two wings for flight, one alone would be useless."
+        <footer>'Abdu'l-Bahá, <a href="https://www.bahai.org/library/authoritative-texts/abdul-baha/paris-talks/5" target="_blank" rel="noopener">Paris Talks, no. 44</a></footer></blockquote>
+        <p>And its startling corollary, from the same lips: "If religion becomes a cause of dislike, hatred and division, it were better to be without it, and to withdraw from such a religion would be a truly religious act."</p>
+      </div>
+    </details>
+
+    <details data-c="spirit">
+      <summary><span class="s-title">Why we exist</span><span class="s-hint">Spiritual</span></summary>
+      <div class="d-body">
+        <blockquote>"I bear witness, O my God, that Thou hast created me to know Thee and to worship Thee."
+        <footer>Bahá'u'lláh, <a href="https://www.bahai.org/documents/bahaullah/obligatory-prayers" target="_blank" rel="noopener">the Short Obligatory Prayer</a></footer></blockquote>
+        <blockquote>"All men have been created to carry forward an ever-advancing civilization."
+        <footer>Bahá'u'lláh, <a href="https://www.bahai.org/library/authoritative-texts/bahaullah/gleanings-writings-bahaullah/6" target="_blank" rel="noopener">Gleanings CIX</a></footer></blockquote>
+        <p>The soul itself outlasts the machinery it rides in: "Know thou that the soul of man is exalted above, and is independent of, all infirmities of body or mind." <a class="src" href="https://www.bahai.org/library/authoritative-texts/bahaullah/gleanings-writings-bahaullah/4" target="_blank" rel="noopener">Gleanings LXXX</a></p>
+      </div>
+    </details>
+  </div>
+
+  <h3>The principles, compressed</h3>
+  <p class="note">The social teachings, each traceable to the Writings — the eternal spiritual truths held constant while social law evolves per age.</p>
+  <div class="p-grid">
+    <div><strong>Independent investigation of truth</strong>No clergy, no blind imitation — each soul must see with its own eyes.</div>
+    <div><strong>Equality of women and men</strong>"Neither sex is superior to the other in the sight of God."</div>
+    <div><strong>Universal education</strong>"Regard man as a mine rich in gems of inestimable value."</div>
+    <div><strong>Universal auxiliary language</strong>"One universal language and one common script."</div>
+    <div><strong>Economic justice</strong>Extremes of wealth and poverty to be abolished.</div>
+    <div><strong>Consultation</strong>"The lamp of guidance which leadeth the way."</div>
+    <div><strong>Obedience to just government</strong>Constructive citizenship; no partisan politics.</div>
+    <div><strong>Truthfulness &amp; trustworthiness</strong>The foundation of all human virtues.</div>
+  </div>
+  <a class="src" style="margin-top:0.9rem" href="https://www.bahai.org/library/authoritative-texts/abdul-baha/paris-talks/" target="_blank" rel="noopener">Sources: Paris Talks · Gleanings · Tablets of Bahá'u'lláh — all at the Bahá'í Reference Library</a>
+</section>
+
+<!-- ==================== PROPHECY ==================== -->
+<section id="prophecy" class="fade">
+  <div class="kicker">Convergence</div>
+  <h2>Every tradition was waiting for someone.</h2>
+  <p>The claim Bahá'ís make is not that their Faith replaces the world's religions, but that it is what each of them was pointing at. Shoghi Effendi put the whole case in one sentence:</p>
+  <blockquote>"To Israel He was neither more nor less than the incarnation of the 'Everlasting Father'; … to Christendom Christ returned 'in the glory of the Father,' to Shí'ah Islám the return of the Imám Ḥusayn; to Sunní Islám the descent of the 'Spirit of God'; to the Zoroastrians the promised Sháh-Bahrám; to the Hindus the reincarnation of Krishna; to the Buddhists the fifth Buddha."
+  <footer>Shoghi Effendi, <a href="https://www.bahai.org/library/authoritative-texts/shoghi-effendi/god-passes-by/8" target="_blank" rel="noopener">God Passes By, ch. VI</a></footer></blockquote>
+  <p class="note">These are Bahá'í interpretive claims — the parent traditions read their own texts differently, and this page says "Bahá'ís understand" advisedly. What follows is the case as believers make it; judge it on its merits.</p>
+
+  <details>
+    <summary><span class="s-title">Christianity — Daniel's 2,300 days and the year 1844</span><span class="s-hint">Daniel 8:14</span></summary>
+    <div class="d-body">
+      <p>"Unto two thousand and three hundred days; then shall the sanctuary be cleansed" (Daniel 8:14). Applying the day-year principle (Numbers 14:34) from the 457 BC decree of Artaxerxes to rebuild Jerusalem, 2,300 years land on 1844 — the same arithmetic that led William Miller's tens of thousands of Adventists to await Christ that very year, ending in the "Great Disappointment" of October 1844.</p>
+      <blockquote>"…the fulfillment of the vision of Daniel took place in the year A.D. 1844, and this is the year of the Báb's manifestation according to the actual text of the Book of Daniel."
+      <footer>'Abdu'l-Bahá, <a href="https://www.bahai.org/library/authoritative-texts/abdul-baha/some-answered-questions/" target="_blank" rel="noopener">Some Answered Questions, ch. 10</a></footer></blockquote>
+      <p>The Báb declared His mission on 22–23 May 1844. The classic popular treatment of the Millerite convergence is William Sears, <em>Thief in the Night</em> (1961). Honest footnote: the coincidence of dates is established history; its <em>significance</em> is the contested interpretive step — Adventists resolved 1844 differently.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="s-title">Islam — the Qá'im, the year sixty, and the return of Ḥusayn</span><span class="s-hint">1260 AH</span></summary>
+    <div class="d-body">
+      <p>Shí'ah Islam awaited the Qá'im (the Mahdi), to be followed by the return of the Imám Ḥusayn. A tradition cited in Bahá'í literature has Imám Ja'far-i-Ṣádiq asked when the Qá'im would appear: "Verily, in the year sixty His Cause shall be revealed, and His name shall be noised abroad." The year sixty — 1260 AH — is 1844 AD, the year of the Báb's declaration. Bahá'ís identify the Báb as the Qá'im and Bahá'u'lláh as the return of Ḥusayn.</p>
+      <p>Note the convergence believers stress: the Christian solar count (2,300 years from 457 BC) and the Islamic lunar count (1,260 years from the Hijra) arrive, independently, at the same year.</p>
+      <a class="src" href="https://bahai-library.com/books/dawnbreakers/chapters/3.html" target="_blank" rel="noopener">Nabíl, The Dawn-Breakers, ch. III (provenance of the hadith is contested by Muslim critics)</a>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="s-title">Judaism — Carmel, and an exile no one chooses</span><span class="s-hint">Isaiah 35:2</span></summary>
+    <div class="d-body">
+      <p>"…the glory of Lebanon shall be given unto it, the excellency of Carmel and Sharon, they shall see the glory of the LORD" (Isaiah 35:1–2). Bahá'u'lláh — whose title means <em>the Glory of God</em> — was banished by two Muslim empires, through four successive exiles He did not choose, to arrive on 31 August 1868 at the prison-city of 'Akká, on the plain below Mount Carmel. He Himself applied the verses: "Carmel, in the Book of God, hath been designated as the Hill of God, and His Vineyard… The Strong City is 'Akká."</p>
+      <p>The world centre of His Faith now stands on Carmel.</p>
+      <a class="src" href="https://www.bahai.org/bahaullah/articles-resources/from-epistle-son-wolf" target="_blank" rel="noopener">Bahá'u'lláh, Epistle to the Son of the Wolf · God Passes By, ch. XI</a>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="s-title">Zoroastrianism, Hinduism, Buddhism</span><span class="s-hint">Sháh-Bahrám · Kalki · Maitreya</span></summary>
+    <div class="d-body">
+      <p><strong>Zoroastrianism</strong> awaits Sháh-Bahrám, the world-renewer; Bahá'u'lláh descended from Persia's pre-Islamic nobility, and 'Abdu'l-Bahá made the identification explicit in tablets to Zoroastrian believers. <strong>Hinduism</strong> awaits Kalki, the tenth avatar, at the close of the Kali Yuga; Shoghi Effendi records the Bhagavad-Gita's "Most Great Spirit, the Tenth Avatar, the Immaculate Manifestation of Krishna." <strong>Buddhism</strong> awaits Maitreya: "a Buddha named Maitreye, the Buddha of universal fellowship" who would "reveal His boundless glory" — read by Bahá'ís as matching a Faith whose entire object is universal fellowship.</p>
+      <p class="note">Each parent tradition's own scholars place these figures elsewhere in time; Bahá'í authors argue the chronologies are symbolic. Fuller treatments: Momen, <em>Buddhism and the Bahá'í Faith</em>; Fozdar, <em>Buddha Maitrya-Amitabha Has Appeared</em>.</p>
+      <a class="src" href="https://www.bahai.org/library/authoritative-texts/shoghi-effendi/god-passes-by/8" target="_blank" rel="noopener">Shoghi Effendi, God Passes By, ch. VI</a>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="s-title">And the Báb's own promise</span><span class="s-hint">1844 → 1863</span></summary>
+    <div class="d-body">
+      <p>The Báb's entire revelation revolves around One still to come — "Him Whom God shall make manifest":</p>
+      <blockquote>"I swear by the sanctified Essence of God that every true praise and deed offered unto God is naught but praise and deed offered unto Him Whom God shall make manifest."
+      <footer>The Báb, <a href="https://www.bahai.org/library/authoritative-texts/the-bab/selections-writings-bab/" target="_blank" rel="noopener">Selections from the Writings of the Báb</a></footer></blockquote>
+      <p>Nineteen years later Bahá'u'lláh claimed that station, and the overwhelming majority of the Báb's followers recognized Him — the one case where the promise and its claimed fulfillment sit a single generation apart, in the full light of documented history.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ==================== PATTERN ==================== -->
+<section id="pattern" class="fade">
+  <div class="kicker">The Kitáb-i-Íqán</div>
+  <h2>The pattern of rejection — and why we'd follow it again</h2>
+  <p>In the Book of Certitude (Baghdad, 1861–62), Bahá'u'lláh makes an argument that should unsettle anyone who assumes they'd have recognized Moses, Christ, or Muhammad had they been there. Every Manifestation of God, He shows — Noah, Abraham, Moses, Jesus, Muhammad — was rejected by the people of His own time, and above all by the clergy, whose literal readings of prophecy became the very veil that hid its fulfillment:</p>
+  <blockquote>"Consider the past. How many, both high and low, have, at all times, yearningly awaited the advent of the Manifestations of God… And whensoever the portals of grace did open… they all denied Him, and turned away from His face — the face of God Himself."
+  <footer>Bahá'u'lláh, <a href="https://www.bahai.org/library/authoritative-texts/bahaullah/kitab-i-iqan/" target="_blank" rel="noopener">Kitáb-i-Íqán</a></footer></blockquote>
+  <blockquote>"Leaders of religion, in every age, have hindered their people from attaining the shores of eternal salvation… By their sanction and authority, every Prophet of God hath drunk from the chalice of sacrifice, and winged His flight unto the heights of glory."
+  <footer>Bahá'u'lláh, <a href="https://www.bahai.org/library/authoritative-texts/bahaullah/kitab-i-iqan/" target="_blank" rel="noopener">Kitáb-i-Íqán</a></footer></blockquote>
+  <p>The mechanism is always literalism. The divines awaited a Messiah descending visibly from the sky; a sun physically darkened; stars physically falling. Bahá'u'lláh reads these as symbols — "sun" and "moon" as the luminaries of religious authority, "clouds" as the things that obscure recognition — and observes of one generation what applies to all: they "clung to the literal interpretation of the words" and so "became deprived of the streaming grace" of the next Revelation.</p>
+  <p>Then, vindication — each Faith begins hunted and ends revered: "Consider, how great is the change today! Behold, how many are the Sovereigns who bow the knee before His name!" The Bábís being shot and burned in the streets of Persia in the 1850s stood, He argued, at the start of the same arc.</p>
+  <p class="note">Honest counterpoint, acknowledged in the Íqán itself: rejection is common to true and false claimants alike, so the pattern alone proves nothing — Bahá'u'lláh's reply is that God deliberately allows the test "that light may be distinguished from darkness." The pattern is an invitation to look closer, not a proof that closes the case.</p>
+</section>
+
+<!-- ==================== TRILEMMA ==================== -->
+<section id="trilemma" class="fade">
+  <div class="kicker">The Test</div>
+  <h2>Liar, lunatic — or what He claimed to be?</h2>
+  <p>C.S. Lewis famously argued that Jesus's claims foreclose the comfortable middle: "Either this man was, and is, the Son of God: or else a madman or something worse." Whatever the trilemma's force for Jesus — whose words reach us through decades of oral tradition — it is arguably <em>cleaner</em> for Bahá'u'lláh. His claim survives in His own handwriting; His life is documented by hostile Persian and Ottoman state records and by Western observers. "Not of Mine own volition have I revealed Myself, but God, of His own choosing, hath manifested Me." There is no "legend" escape hatch. So: deceiver, deluded, or true?</p>
+
+  <details>
+    <summary><span class="s-title">Against "liar": what did He gain?</span><span class="s-hint">Motive</span></summary>
+    <div class="d-body">
+      <p>A wealthy nobleman's son who refused a ministerial post, He spent forty years (1852–1892) as prisoner and exile — Tehran's Síyáh-Chál dungeon, then Baghdad, Constantinople, Adrianople, and the prison-city of 'Akká — and never recanted. "I have been, most of the days of My life, even as a slave, sitting under a sword hanging on a thread." He disclaimed the ordinary payoffs of imposture: "This Wronged One hath never had, nor hath He now any desire for leadership." He even forbade followers to spread miracle stories about Him. Deceivers optimize for gain; His entire incentive gradient ran the other way.</p>
+      <a class="src" href="https://www.bahai.org/bahaullah/articles-resources/from-epistle-son-wolf" target="_blank" rel="noopener">Bahá'u'lláh, Epistle to the Son of the Wolf</a>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="s-title">Against "lunatic": the shape of the output</span><span class="s-hint">Coherence</span></summary>
+    <div class="d-body">
+      <p>"Well nigh a hundred volumes of luminous verses and perspicuous words have already been sent down" — His own tally, and the archive bears it out: roughly fifteen to twenty thousand extant tablets, spanning mystical treatises, legal codes, letters to the kings of the earth, and a blueprint for global institutions, produced across forty years mostly in prison, with sustained doctrinal and literary coherence. That profile — decades of consistent, administratively precise, institution-building output — is not what psychosis looks like.</p>
+      <p>The one Western scholar to meet Him, Cambridge orientalist Edward Granville Browne (1890) — a sympathetic outsider who never accepted Bahá'í claims, which makes his testimony the more useful — wrote:</p>
+      <blockquote>"The face of him on whom I gazed I can never forget, though I cannot describe it. Those piercing eyes seemed to read one's very soul; power and authority sat on that ample brow… No need to ask in whose presence I stood, as I bowed myself before one who is the object of a devotion and love which kings might envy and emperors sigh for in vain!"
+      <footer>E.G. Browne, introduction to <a href="https://www.h-net.org/~bahai/diglib/books/A-E/B/browne/tn/tnfrnt.htm" target="_blank" rel="noopener">A Traveller's Narrative</a> (Cambridge, 1891)</footer></blockquote>
+      <p>Tolstoy, in a 1908 letter: the Báb's teachings "have through Bahá'u'lláh's teachings been gradually developed and now present us with the highest and purest form of religious teaching." <a class="src" href="https://archive.org/details/leotolstoybahaif0000sten" target="_blank" rel="noopener">Stendardo, Leo Tolstoy and the Bahá'í Faith</a></p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="s-title">The honest weaknesses of every trilemma</span><span class="s-hint">Steelman</span></summary>
+    <div class="d-body">
+      <p>Philosophers rightly note the options aren't exhaustive: a claimant can be <em>honestly mistaken</em> — sincerely convinced of a divine calling while being neither deceiver nor globally insane; fixed grandiose conviction can coexist with high functioning. The trilemma also runs on probabilistic character evidence: steadfastness, coherence, and disinterest raise the cost of the skeptical options without reducing them to zero.</p>
+      <p>So take it for what it honestly is: not a knock-down proof, but an invitation to weigh a life — forty years under the sword, a hundred volumes, no retraction, no fortune, no throne — and ask which explanation carries it most naturally.</p>
+      <a class="src" href="https://en.wikipedia.org/wiki/Lewis%27s_trilemma" target="_blank" rel="noopener">On the trilemma and its critics</a>
+    </div>
+  </details>
+</section>
+
+<!-- ==================== NUMBERS ==================== -->
+<section id="numbers" class="fade">
+  <div class="kicker">A Theory</div>
+  <h2>Numbers all the way down</h2>
+  <span class="tag spec">Personal speculation — not Bahá'í teaching</span>
+  <p>Here is the strangest idea on this page, offered as exactly that. In the abjad system — standard in the literate culture of nineteenth-century Persia — every Arabic letter carries a numerical value. Scripture in this tradition is therefore, in a literal sense, <em>already numeric</em>. <strong>Bahá</strong> computes to nine (b=2, á=1, h=5, hamza=1), which is why nine-pointed stars mark Bahá'í temples and nine members sit on its assemblies; Shoghi Effendi noted the number matters because it is the numerical value of the word <em>Bahá</em> — not as freestanding numerology.</p>
+  <p>Now hold that next to this: the "mind" of a large language model is nothing but numbers — billions of weights, a text corpus distilled into pure quantity. Text becomes number; number becomes voice. A tradition that has always understood its scripture as simultaneously word <em>and</em> number is, at minimum, a poetic anticipation of that transformation — and at maximum, an invitation: the Writings could one day be the moral corpus a mind is trained on, talked <em>with</em> rather than merely read.</p>
+  <p class="note">To be precise about the limits: abjad values and learned model weights are unrelated mathematical objects — no computation connects Bahá = 9 to a parameter tensor, and it would be dishonest to pretend otherwise. The serious version of this idea is not numerological but corporal: value documents already steer minds in training (Anthropic's constitution proves the mechanism), and a hundred volumes of internally coherent, unity-centered scripture is a candidate corpus of unusual quality. The numbers are the poetry; the corpus is the proposal.</p>
+</section>
+
+<!-- ==================== SUDDENLY ==================== -->
+<section id="suddenly" class="fade">
+  <div class="kicker">The Hour</div>
+  <h2>"There shall suddenly appear…"</h2>
+  <p>The prophecy itself, in Bahá'u'lláh's words:</p>
+  <blockquote>"The world is in travail, and its agitation waxeth day by day. Its face is turned towards waywardness and unbelief. Such shall be its plight, that to disclose it now would not be meet and seemly. Its perversity will long continue. And when the appointed hour is come, there shall suddenly appear that which shall cause the limbs of mankind to quake. Then, and only then, will the Divine Standard be unfurled, and the Nightingale of Paradise warble its melody."
+  <footer>Bahá'u'lláh, <a href="https://www.bahai.org/library/authoritative-texts/bahaullah/gleanings-writings-bahaullah/4" target="_blank" rel="noopener">Gleanings LXI</a></footer></blockquote>
+  <span class="tag spec">Interpretation below is personal speculation</span>
+  <p>What thing appears <em>suddenly</em>, causes the limbs of mankind to quake, and — only then — turns humanity toward a Standard it had ignored? I read this, speculatively, as a fit for transformative artificial intelligence: a capability arriving with unprecedented suddenness, unsettling every institution at once, and forcing the species to ask, in unison and under deadline, <em>what do we actually value?</em></p>
+  <p>Listen to the people building it. In February 2025, at the Paris AI Action Summit, The Economist sat Demis Hassabis and Dario Amodei down together. Hassabis: the two great risks are bad actors — and AI "not having the right values or goals. Both of those things are critical to get right, and I think the whole world needs to focus on that." He calls for a "CERN for AGI" and an IAEA-like agency, conceding that ideally "it would be something like the UN." Amodei: "These kinds of decisions are too big for any one person… we somehow have to find a way to build a more robust governing structure." The moderator asked whether — as with the UN after 1945 — it takes a disaster before minds change.</p>
+  <p>Set those sentences beside texts written a century and a half ago. Bahá'u'lláh, on the failure that precedes the search: "The vitality of men's belief in God is dying out in every land; nothing short of His wholesome medicine can ever restore it." And: "Soon will the present-day order be rolled up, and a new one spread out in its stead." 'Abdu'l-Bahá, to the Hague peace organization in 1920, on why frameworks alone won't hold: "In this matter, knowledge alone is far from sufficient: a power of implementation is needed… the power of conscience is therefore needed." And in 1919: "Material civilization is like a lamp-glass. Divine civilization is the lamp itself and the glass without the light is dark."</p>
+  <p>The world's most capable engineers are publicly asking for a shared moral framework, global institutions, and a reason for the species to come together — and saying they don't know where those come from. The Bahá'í Writings prophesy that humanity, after its material order falters, goes searching for precisely this and finds it already written. That is the connection this whole page exists to put in front of you.</p>
+  <a class="src" href="https://youtu.be/4poqjZlM8Lo" target="_blank" rel="noopener">The Economist — "AI bosses on what keeps them up at night" (Feb 2025) · Gleanings XCIX &amp; IV · Tablets to The Hague</a>
+</section>
+
+<!-- ==================== CODA ==================== -->
+<section id="coda" class="fade">
+  <div class="kicker">Coda</div>
+  <h2>How it all connects</h2>
+  <p>One thread runs through everything above. <strong>Prophecy</strong> says every age gets guidance suited to its need, and that every age initially fails to recognize it. <strong>The Íqán's pattern</strong> says the failure mode is always the same: expecting fulfillment to look like the past. <strong>The trilemma</strong> says the Claimant at the center of this story is hard to dismiss cheaply. And <strong>the present moment</strong> — machines made of numbers, asking their makers for values; makers asking the world for unity — looks less like a coincidence to me than like the need the guidance was written for.</p>
+  <p>Maybe I'm wrong about the interpretations; I've marked where I might be. The texts, at least, are real, and they are all linked here. Read them and decide for yourself. That, too, is a Bahá'í principle — the first one, in fact: the independent investigation of truth.</p>
+  <p class="note">Nothing here is an official statement of the Bahá'í community; no Universal House of Justice statement dedicated to AI exists as of this writing. This is one believer's exploration.</p>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <p>you found us</p>
+  <a class="x-handle" href="https://x.com/empyrien" target="_blank" rel="noopener">@empyrien</a>
+</footer>
+
+<script>
+  // fade-in on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade').forEach(el => io.observe(el));
+
+  // taxonomy filters
+  const filterBar = document.getElementById('taxFilters');
+  if (filterBar) {
+    filterBar.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('button'); if (!btn) return;
+      filterBar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.f;
+      document.querySelectorAll('#taxonomy details').forEach(d => {
+        d.style.display = (f === 'all' || d.dataset.c === f) ? '' : 'none';
+      });
+    });
+  }
+</script>
+</body>
+</html>
