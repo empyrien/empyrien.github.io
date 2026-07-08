@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Journey — Empyrien</title>
+<meta name="description" content="A ten-minute journey through a story most people have never heard — one idea at a time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0e;
+    --ink: #e9e4da;
+    --ink-dim: #8a857b;
+    --ink-faint: #5c5850;
+    --hairline: rgba(233,228,218,0.18);
+    --hairline-soft: rgba(233,228,218,0.08);
+    --gold: #c9b07e;
+    --gold-dim: rgba(201,176,126,0.55);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+    display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: rgba(201,176,126,0.25); }
+  a { color: var(--gold); text-decoration: none; }
+
+  .top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.4rem 1.6rem; font-size: 0.72rem;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .top a { color: var(--ink-dim); }
+  .top a:hover { color: var(--ink); }
+
+  .stage {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+    position: relative;
+  }
+  .stage::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 55% 45% at 50% 42%, rgba(233,228,218,0.045), transparent 70%);
+    pointer-events: none;
+  }
+
+  .card {
+    max-width: 34rem; width: 100%;
+    text-align: center;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .7s cubic-bezier(0.22,1,0.36,1), transform .7s cubic-bezier(0.22,1,0.36,1);
+  }
+  .card.vis { opacity: 1; transform: none; }
+
+  .kicker {
+    font-size: 0.68rem; letter-spacing: 0.34em; text-transform: uppercase;
+    color: var(--gold-dim); margin-bottom: 1.5rem;
+  }
+  .card h1 {
+    font-weight: 300; font-size: clamp(1.55rem, 4.6vw, 2.3rem);
+    line-height: 1.35; letter-spacing: 0.02em; margin-bottom: 1.3rem;
+  }
+  .card p {
+    font-size: clamp(1.08rem, 2.4vw, 1.22rem); line-height: 1.75;
+    color: var(--ink-dim); margin-bottom: 1rem;
+  }
+  .card p strong { color: var(--ink); font-weight: 400; }
+  .card blockquote {
+    font-style: italic; font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    line-height: 1.7; color: var(--ink); margin: 1.4rem 0;
+  }
+  .card blockquote footer {
+    font-style: normal; font-size: 0.85rem; color: var(--ink-dim);
+    letter-spacing: 0.06em; margin-top: 0.8rem;
+  }
+  .spec {
+    display: inline-block; font-size: 0.6rem; letter-spacing: 0.24em;
+    text-transform: uppercase; padding: 0.3em 0.9em;
+    border: 1px solid rgba(201,176,126,0.4); border-radius: 2em;
+    color: var(--gold); margin-bottom: 1.3rem;
+  }
+
+  .actions { margin-top: 2.2rem; display: flex; flex-direction: column; gap: 0.7rem; align-items: center; }
+  .btn {
+    font-family: inherit; font-size: 0.95rem; letter-spacing: 0.14em;
+    background: none; color: var(--ink);
+    border: 1px solid var(--hairline); border-radius: 2em;
+    padding: 0.7em 2.2em; cursor: pointer;
+    transition: border-color .3s, color .3s;
+    max-width: 100%;
+  }
+  .btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .btn.primary { border-color: var(--gold-dim); color: var(--gold); }
+  .btn.primary:hover { border-color: var(--gold); }
+  a.btn { display: inline-block; }
+
+  .bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 1.6rem 1.6rem; font-size: 0.78rem;
+    letter-spacing: 0.16em; color: var(--ink-faint);
+  }
+  .bottom button {
+    font-family: inherit; font-size: 0.78rem; letter-spacing: 0.16em;
+    background: none; border: none; color: var(--ink-faint); cursor: pointer;
+  }
+  .bottom button:hover { color: var(--ink-dim); }
+  .dots { display: flex; gap: 0.45rem; }
+  .dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--hairline-soft); transition: background .4s; }
+  .dots span.on { background: var(--gold-dim); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <a href="/">Empyrien</a>
+  <span id="chapter"></span>
+</div>
+
+<div class="stage">
+  <div class="card" id="card"></div>
+</div>
+
+<div class="bottom">
+  <button id="backBtn" style="visibility:hidden">&larr; back</button>
+  <div class="dots" id="dots"></div>
+  <button id="restartBtn">restart</button>
+</div>
+
+<script>
+const N = {
+
+/* ---------------- trunk ---------------- */
+
+intro: { ch: "a beginning", trunk: 0, h: "This is a story most people have never heard.",
+  p: ["It takes about ten minutes, one idea at a time. You'll reach a crossroads and choose your own way through.",
+      "Nothing here asks you to believe anything. It only asks you to consider."],
+  next: [["begin", "q1", 1]] },
+
+q1: { ch: "the pattern · i", trunk: 1, h: "Where do the world's moral codes actually come from?",
+  p: ["Honesty. Compassion. Justice. The dignity of every person. These feel universal — but they entered the world somewhere.",
+      "Trace any civilization's deepest values back far enough and you arrive, almost every time, at the same kind of moment: a single person stands up and says, <strong>God has spoken to me, and this is what He asks of you.</strong>"],
+  next: [["continue", "q2", 1]] },
+
+q2: { ch: "the pattern · ii", trunk: 2, h: "It has happened only a handful of times.",
+  p: ["Abraham. Moses. Krishna. Buddha. Zoroaster. Jesus. Muhammad.",
+      "Different centuries, different continents, different languages — and a strangely consistent pattern: each appears among ordinary people, each is rejected and persecuted by the authorities of his time, and each, within a few generations, has reshaped the moral world of millions."],
+  next: [["continue", "q3", 1]] },
+
+q3: { ch: "the pattern · iii", trunk: 3, h: "Here's the question almost nobody asks.",
+  p: ["<strong>When was the last time it happened?</strong>",
+      "Most people assume the answer is ancient history — fourteen centuries ago, or twenty. The pattern, we quietly assume, is finished.",
+      "What if it isn't?"],
+  next: [["continue", "bab", 1]] },
+
+bab: { ch: "1844 · persia", trunk: 4, h: "In 1844, a young merchant in Persia made an announcement.",
+  p: ["He was twenty-four. He took the title <strong>the Báb</strong> — Arabic for “the Gate” — and declared that God was about to send a new Messenger, one who would unite the human race.",
+      "Persia's clergy responded the way clergy always had. The Báb was arrested, tortured, and in 1850 executed by a firing squad of 750 rifles. Bahá'í histories record thousands of his followers — as many as twenty thousand — killed alongside him."],
+  next: [["continue", "bahaullah", 1]] },
+
+bahaullah: { ch: "1863 · baghdad", trunk: 5, h: "Then the one he promised stood up.",
+  p: ["A Persian nobleman named Mírzá Ḥusayn-ʻAlí had given up wealth and a ministerial career to follow the Báb. He was thrown into a dungeon, then exiled — Baghdad, Constantinople, Adrianople, and finally the prison-city of 'Akká.",
+      "In 1863 he announced that he was the Messenger the Báb had promised. He took the title <strong>Bahá'u'lláh</strong> — “the Glory of God.” He spent forty years as a prisoner and exile, never recanted, and wrote roughly a hundred volumes."],
+  next: [["continue", "taught", 1]] },
+
+taught: { ch: "the teachings", trunk: 6, h: "Now, the surprise: what he actually taught.",
+  p: ["From a 19th-century Persian prison came this: <strong>humanity is one family.</strong> Science and religion must agree. Women and men are equal. Every child must be educated. Prejudice of every kind must go. All the world's religions come from one God, each a chapter of one unfolding story. And the nations must one day federate under a common order and a universal peace.",
+      "“The earth is but one country, and mankind its citizens” — his sentence, written around 1870."],
+  next: [["continue", "name", 1]] },
+
+name: { ch: "today", trunk: 7, h: "The faith he founded is called the Bahá'í Faith.",
+  p: ["Several million people follow it today, in virtually every country on earth. It has no clergy and no sects. Its world centre stands on Mount Carmel in Haifa — the mountain where its Founder's exile ended.",
+      "That's the foundation. From here, the story branches — and different questions lead down different roads."],
+  next: [["continue", "cross", 1]] },
+
+cross: { ch: "the crossroads", trunk: 8, h: "Which question pulls at you?",
+  p: [],
+  next: [
+    ["“How could anyone believe he spoke for God?”", "c1", 1],
+    ["“Didn't the other religions predict anything?”", "p1", 1],
+    ["“What does this have to do with today — and AI?”", "t1", 1]
+  ] },
+
+/* ---------------- claim path ---------------- */
+
+c1: { ch: "the claim · i", h: "Start with what he actually said.",
+  bq: "“Not of Mine own volition have I revealed Myself, but God, of His own choosing, hath manifested Me.”",
+  bqf: "Bahá'u'lláh, in his own hand",
+  p: ["That claim allows only a few explanations. He was lying. He was deluded. Or he was telling the truth.",
+      "C.S. Lewis made this argument famous about Jesus. For Bahá'u'lláh it's sharper — his words survive in his own handwriting, and his life is documented by the hostile governments that imprisoned him. There's no legend to blame."],
+  next: [["so — was he lying?", "c2", 1]] },
+
+c2: { ch: "the claim · ii", h: "Liars want something.",
+  p: ["Money, power, comfort, escape. Bahá'u'lláh was born into wealth and gave it up. He refused a position at court. He spent forty years as a prisoner and exile and never once recanted — even with release on offer for a word.",
+      "He forbade his followers to spread miracle stories about him, and wrote: “This Wronged One hath never had, nor hath He now any desire for leadership.”",
+      "Whatever he was doing, he wasn't collecting the payoffs of a con."],
+  next: [["then was he mad?", "c3", 1]] },
+
+c3: { ch: "the claim · iii", h: "Madness leaves fingerprints.",
+  p: ["Across forty years — most of them in prisons and exile — he produced about a hundred volumes: mystical philosophy, a book of laws, letters to Queen Victoria, Napoleon III, the Pope, and the Sháh, and the design for a global administrative order still running today. All of it coherent, all of one piece.",
+      "The one Western scholar to meet him, Cambridge's Edward Granville Browne — who never became a believer — wrote: “Those piercing eyes seemed to read one's very soul; power and authority sat on that ample brow… No need to ask in whose presence I stood.”"],
+  next: [["or honestly mistaken?", "c4", 1]] },
+
+c4: { ch: "the claim · iv", h: "The fair objection — and an answer.",
+  p: ["A skeptic will say: maybe he sincerely believed it and was simply wrong. It's a fair option, and it deserves a fair answer.",
+      "First: that hypothesis has to carry forty unwavering years, a hundred coherent volumes, and letters to emperors — sincere error rarely builds like that.",
+      "Second, look at history's record: the few figures who made this exact claim and sustained it to the end — Moses, Christ, Muhammad — founded the moral civilizations we all live inside. “Liar” and “lunatic” have been terrible predictors of what follows such people."],
+  next: [["continue", "c5", 1]] },
+
+c5: { ch: "the claim · v", h: "The trilemma never proves. It weighs.",
+  p: ["Forty years under the sword. A hundred volumes. No retraction, no fortune, no throne.",
+      "The question it leaves you with: which explanation carries that life most naturally?"],
+  next: [["take another road", "cross", 0], ["go deeper: the full argument", "LINK:/vision/trilemma/", 0], ["finish the journey", "end", 1]] },
+
+/* ---------------- prophecy path ---------------- */
+
+p1: { ch: "the prophecies · i", h: "Every great faith is waiting for someone.",
+  p: ["Jews await the Messiah. Christians await the return of Christ. Muslims await the Mahdi. Zoroastrians await Sháh-Bahrám. Hindus await the Kalki avatar. Buddhists await Maitreya, the Buddha of universal fellowship.",
+      "Bahá'ís make a startling claim: these are all the same appointment — and it has been kept."],
+  next: [["continue", "p2", 1]] },
+
+p2: { ch: "the prophecies · ii", h: "In 1844, thousands of Christians did the math.",
+  p: ["The Book of Daniel says the sanctuary would be cleansed after “two thousand and three hundred days.” Reading each day as a year — the Bible's own convention — and counting from the decree to rebuild Jerusalem in 457 BC lands on one year: <strong>1844</strong>.",
+      "Tens of thousands of Americans, the Millerites, sold their possessions and waited for Christ that year. History calls what followed the Great Disappointment."],
+  next: [["continue", "p3", 1]] },
+
+p3: { ch: "the prophecies · iii", h: "Muslims had a date too. The same one.",
+  p: ["A tradition traced to Imám Ja'far-i-Ṣádiq promised, of the awaited Qá'im: “Verily, in the year sixty His Cause shall be revealed.” The year 1260 of the Islamic calendar.",
+      "1260 AH is <strong>1844 AD</strong>.",
+      "Two calendars — one solar, counting from Jerusalem; one lunar, counting from Mecca — arriving independently at the same year. The year the Báb stood up in Shiraz and declared his mission."],
+  next: [["continue", "p4", 1]] },
+
+p4: { ch: "the prophecies · iv", h: "And one prophecy came true by force.",
+  p: ["Isaiah promised that a place would see the glory of God: “the excellency of Carmel and Sharon, they shall see the glory of the LORD.”",
+      "Bahá'u'lláh — whose name means <strong>the Glory of God</strong> — was banished by two empires, through four exiles he did not choose, to the prison-city of 'Akká, on the plain below Mount Carmel. His enemies chose the destination. The world centre of his faith now stands on that mountain."],
+  next: [["continue", "p5", 1]] },
+
+p5: { ch: "the prophecies · v", h: "The honest caveat, and the invitation.",
+  p: ["Each parent tradition reads its own texts differently — these connections are the Bahá'í reading, and this site marks them as such. Coincidences of dates are history; their meaning is yours to judge.",
+      "The founders of the faith laid the whole case out in writing, verse by verse. It's all linked, ready for your own eyes."],
+  next: [["take another road", "cross", 0], ["go deeper: the full case", "LINK:/vision/prophecy/", 0], ["finish the journey", "end", 1]] },
+
+/* ---------------- today path ---------------- */
+
+t1: { ch: "today · i", h: "Something strange is happening in our own decade.",
+  p: ["The people building artificial intelligence — the most powerful technology in human history — keep saying the same two things.",
+      "One: the hard problem is <strong>values</strong>. What should a mind more capable than ours actually care about? Two: no single company or country can be trusted to decide alone. <strong>The world has to come together.</strong>"],
+  next: [["continue", "t2", 1]] },
+
+t2: { ch: "today · ii", h: "In their own words.",
+  p: ["Demis Hassabis, who runs Google DeepMind: the great risk is AI “not having the right values or goals… I think the whole world needs to focus on that.” He has called for a “CERN for AGI” and says ideally the answer “would be something like the UN.”",
+      "Dario Amodei, who runs Anthropic: “These kinds of decisions are too big for any one person… we somehow have to find a way to build a more robust governing structure.”",
+      "Engineers, asking the world for a shared moral framework and unity — and admitting they don't know where those come from."],
+  next: [["continue", "t3", 1]] },
+
+t3: { ch: "today · iii", h: "Values can already be written into a mind.",
+  p: ["This part is established fact: Anthropic trains its AI against a written constitution — a document of values placed at the heart of the machine. The method works. The open question is only <strong>which values, whose document</strong>.",
+      "Now recall what sits in the Bahá'í writings: a hundred volumes, internally coherent, centered on the oneness of humanity, world federation, and the harmony of science and religion — written a century before anyone needed them for this."],
+  next: [["continue", "t4", 1]] },
+
+t4: { ch: "today · iv", h: "And one sentence from the 1800s reads differently now.",
+  bq: "“And when the appointed hour is come, there shall suddenly appear that which shall cause the limbs of mankind to quake. Then, and only then, will the Divine Standard be unfurled…”",
+  bqf: "Bahá'u'lláh, Gleanings LXI",
+  spec: true,
+  p: ["Something sudden. Something that shakes every institution at once. And only then, a turn toward a Standard the world had ignored.",
+      "Reading that as artificial intelligence is speculation, and this site labels it so. But sit with the shape of it."],
+  next: [["continue", "t5", 1]] },
+
+t5: { ch: "today · v", h: "The writings promise one more thing.",
+  p: ["That after its material order falters, humanity goes searching — for a moral code, for a reason to unite — and finds the answer already written, waiting.",
+      "Whether that promise names our moment is yours to weigh. The texts are real, they are linked, and they were written before any of this existed."],
+  next: [["take another road", "cross", 0], ["go deeper: side by side", "LINK:/vision/suddenly/", 0], ["finish the journey", "end", 1]] },
+
+/* ---------------- end ---------------- */
+
+end: { ch: "the first principle", h: "One last thing — and it's the most Bahá'í thing on this site.",
+  p: ["The first principle of this faith is the <strong>independent investigation of truth</strong>: no clergy, no inherited belief, no one — including this site — permitted to do your seeing for you.",
+      "So: every claim you just read is cited to its source in the fuller sections, and the writings themselves are free to read. Take your time. Look with your own eyes."],
+  next: [["explore the vision", "LINK:/vision/", 0], ["read the writings at bahai.org", "LINK:https://www.bahai.org/library/", 0], ["begin again", "intro", 0]] }
+};
+
+const TRUNK_LEN = 9;
+let cur = "intro";
+const hist = [];
+
+const card = document.getElementById('card');
+const chapterEl = document.getElementById('chapter');
+const backBtn = document.getElementById('backBtn');
+const dotsEl = document.getElementById('dots');
+
+for (let i = 0; i < TRUNK_LEN; i++) { const s = document.createElement('span'); dotsEl.appendChild(s); }
+
+function render(id, push) {
+  const n = N[id];
+  if (!n) return;
+  if (push && cur !== id) hist.push(cur);
+  cur = id;
+  card.classList.remove('vis');
+  setTimeout(() => {
+    let html = '';
+    if (n.spec) html += '<span class="spec">speculation — labeled as such</span>';
+    html += '<h1>' + n.h + '</h1>';
+    if (n.bq) html += '<blockquote>' + n.bq + '<footer>' + n.bqf + '</footer></blockquote>';
+    (n.p || []).forEach(t => html += '<p>' + t + '</p>');
+    html += '<div class="actions">';
+    n.next.forEach(([label, to, primary], i) => {
+      if (to.startsWith('LINK:')) {
+        html += '<a class="btn' + (primary ? ' primary' : '') + '" href="' + to.slice(5) + '">' + label + '</a>';
+      } else {
+        html += '<button class="btn' + (primary ? ' primary' : '') + '" data-to="' + to + '">' + label + '</button>';
+      }
+    });
+    html += '</div>';
+    card.innerHTML = html;
+    chapterEl.textContent = n.ch || '';
+    backBtn.style.visibility = hist.length ? 'visible' : 'hidden';
+    dotsEl.querySelectorAll('span').forEach((s, i) => {
+      s.classList.toggle('on', n.trunk !== undefined && i <= n.trunk);
+    });
+    dotsEl.style.visibility = (n.trunk !== undefined) ? 'visible' : 'hidden';
+    requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('vis')));
+  }, 250);
+}
+
+card.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-to]');
+  if (b) render(b.dataset.to, true);
+});
+backBtn.addEventListener('click', () => { if (hist.length) { const prev = hist.pop(); render(prev, false); } });
+document.getElementById('restartBtn').addEventListener('click', () => { hist.length = 0; render('intro', false); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    const first = card.querySelector('.btn.primary') || card.querySelector('button[data-to]');
+    if (first && document.activeElement.tagName !== 'BUTTON' && document.activeElement.tagName !== 'A') {
+      e.preventDefault();
+      first.click();
+    }
+  }
+});
+
+render('intro', false);
+</script>
+</body>
+</html>
