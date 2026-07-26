@@ -98,10 +98,23 @@
     var readout = document.getElementById("size-readout");
     if (readout) readout.textContent = Math.round(prefs.scale * 100) + "%";
 
-    var dec = document.getElementById("size-down");
-    var inc = document.getElementById("size-up");
-    if (dec) dec.disabled = prefs.scale <= SCALES[0];
-    if (inc) inc.disabled = prefs.scale >= SCALES[SCALES.length - 1];
+    var atMin = prefs.scale <= SCALES[0];
+    var atMax = prefs.scale >= SCALES[SCALES.length - 1];
+    ["size-down", "stage-size-down"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.disabled = atMin;
+    });
+    ["size-up", "stage-size-up"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.disabled = atMax;
+    });
+
+    var stageTheme = document.getElementById("stage-theme");
+    if (stageTheme) {
+      var glyph = stageTheme.querySelector(".glyph");
+      if (glyph) glyph.textContent = effective === "dark" ? "◐" : "◑";
+      stageTheme.setAttribute("aria-pressed", String(effective === "dark"));
+    }
   }
 
   function stepSize(dir) {
@@ -143,19 +156,42 @@
     toast("Display settings reset");
   });
 
-  /* Disclosure panels in the toolbar (accessibility, readers). */
-  document.querySelectorAll("[data-panel-toggle]").forEach(function (btn) {
-    var panel = document.getElementById(btn.getAttribute("data-panel-toggle"));
+  /* Disclosure panels. A panel can have more than one button opening it — the
+     toolbar has one and the slideshow has another — so the state lives on the
+     panel and every button that points at it is kept in step. */
+  function setPanel(id, open, focusInside) {
+    var panel = document.getElementById(id);
     if (!panel) return;
-    btn.setAttribute("aria-expanded", "false");
+    panel.hidden = !open;
+    document.querySelectorAll('[data-panel-toggle="' + id + '"]').forEach(function (b) {
+      b.setAttribute("aria-expanded", String(open));
+    });
+    if (open && focusInside) {
+      var first = panel.querySelector("input, button, select");
+      if (first) first.focus();
+    }
+  }
+
+  function anyPanelOpen() {
+    return !![].slice.call(document.querySelectorAll("[data-panel-toggle]")).find(function (b) {
+      var p = document.getElementById(b.getAttribute("data-panel-toggle"));
+      return p && !p.hidden;
+    });
+  }
+
+  function closeAllPanels() {
+    document.querySelectorAll("[data-panel-toggle]").forEach(function (b) {
+      setPanel(b.getAttribute("data-panel-toggle"), false);
+    });
+  }
+
+  document.querySelectorAll("[data-panel-toggle]").forEach(function (btn) {
+    var id = btn.getAttribute("data-panel-toggle");
+    var panel = document.getElementById(id);
+    if (!panel) return;
+    btn.setAttribute("aria-expanded", String(!panel.hidden));
     btn.addEventListener("click", function () {
-      var open = btn.getAttribute("aria-expanded") === "true";
-      btn.setAttribute("aria-expanded", String(!open));
-      panel.hidden = open;
-      if (!open) {
-        var first = panel.querySelector("input, button, select");
-        if (first) first.focus();
-      }
+      setPanel(id, panel.hidden, true);
     });
   });
 
@@ -731,14 +767,26 @@
     stage.querySelector(".stage-source").textContent =
       (author + (src ? " · " + src : "")).trim();
 
+    var showRail = stage.querySelector("#stage-pron-toggle").getAttribute("aria-pressed") === "true";
+
     var text = stage.querySelector(".stage-text");
     text.textContent = "";
     var body$ = el.querySelector(".reading-text");
     if (body$) {
       var clone = body$.cloneNode(true);
-      /* Buttons inside the slide would be tab-traps on a television. */
+      /* Buttons inside the slide would be tab-traps on a television. With the
+         rail showing they become a faint dashed mark instead, so the words
+         listed underneath can be found in the text; otherwise they go plain. */
       [].forEach.call(clone.querySelectorAll(".pron"), function (b) {
-        b.parentNode.replaceChild(document.createTextNode(b.textContent), b);
+        var replacement;
+        if (showRail) {
+          replacement = document.createElement("span");
+          replacement.className = "stage-mark";
+          replacement.textContent = b.textContent;
+        } else {
+          replacement = document.createTextNode(b.textContent);
+        }
+        b.parentNode.replaceChild(replacement, b);
       });
       while (clone.firstChild) text.appendChild(clone.firstChild);
     }
@@ -746,7 +794,6 @@
     /* Optional pronunciation rail, for whoever is reading aloud. */
     var rail = stage.querySelector(".stage-pron");
     rail.textContent = "";
-    var showRail = stage.querySelector("#stage-pron-toggle").getAttribute("aria-pressed") === "true";
     if (showRail) {
       var onScreen = text.textContent;
       var seen = {};
@@ -817,6 +864,7 @@
 
   function closeStage() {
     if (!stage || stage.hidden) return;
+    closeAllPanels();
     stage.hidden = true;
     document.body.classList.remove("presenting");
     if (document.fullscreenElement && document.exitFullscreen) {
@@ -839,6 +887,14 @@
       renderSlide();
     });
 
+    /* The stage covers the toolbar, so the settings that matter most while
+       reading aloud are repeated here; the full panel floats over the top. */
+    stage.querySelector("#stage-size-up").addEventListener("click", function () { stepSize(1); });
+    stage.querySelector("#stage-size-down").addEventListener("click", function () { stepSize(-1); });
+    stage.querySelector("#stage-theme").addEventListener("click", function () {
+      setPref("theme", (prefs.theme || systemTheme()) === "dark" ? "light" : "dark");
+    });
+
     /* Start the slideshow at a particular reading. */
     readings.forEach(function (el, i) {
       var btn = el.querySelector(".present-here");
@@ -852,7 +908,11 @@
       } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
         e.preventDefault(); goTo(-1);
       } else if (e.key === "Escape") {
-        e.preventDefault(); closeStage();
+        e.preventDefault();
+        /* Escape backs out of an open settings panel before it leaves the
+           slideshow, so one stray key press cannot end the programme. */
+        if (anyPanelOpen()) closeAllPanels();
+        else closeStage();
       } else if (e.key === "Home") {
         e.preventDefault(); stageIndex = 0; renderSlide();
       } else if (e.key === "End") {

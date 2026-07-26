@@ -847,6 +847,20 @@ input[type="range"] { accent-color: var(--accent); }
 .stage[hidden] { display: none; }
 body.presenting { overflow: hidden; }
 
+/* The stage covers the page, so a settings panel opened from inside it has to
+   float above, and scroll on its own if the screen is short. */
+body.presenting .panel:not([hidden]) {
+  position: fixed;
+  z-index: 430;
+  top: 3.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(46rem, calc(100vw - 1.5rem));
+  max-height: min(78vh, 34rem);
+  overflow-y: auto;
+  box-shadow: 0 18px 50px var(--shadow-lift), 0 0 0 1px var(--rule);
+}
+
 .stage-top {
   display: flex;
   align-items: center;
@@ -857,15 +871,29 @@ body.presenting { overflow: hidden; }
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
+/* min-width:0 on the grid rows, or a long control row widens the whole grid
+   column and pushes the last button off the screen. */
+.stage-top, .stage-foot { min-width: 0; }
 .stage-top > span:last-child { display: flex; gap: 0.4rem; flex: 0 0 auto; }
-.stage-count { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stage-count {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* On a phone the controls keep their icons but drop their labels, so the
    header stays on one line and the reading keeps the height. */
-@media (max-width: 34rem) {
-  .stage-top { letter-spacing: 0.12em; }
-  .stage-top .tool { padding: 0.35rem 0.7rem; }
-  #stage-pron-toggle .text { display: none; }
+/* Narrow screens keep the icons and drop the words, so the row stays on one
+   line and the reading keeps its height. The text-size steppers go too — they
+   are a convenience where there is room, and the Accessibility panel one tap
+   away has them along with everything else. */
+@media (max-width: 46rem) {
+  .stage-top { letter-spacing: 0.12em; gap: 0.5rem; }
+  .stage-top .tool { padding: 0.35rem 0.62rem; }
+  .stage-top .tool .text { display: none; }
+  #stage-size-down, #stage-size-up { display: none; }
 }
 
 .stage-body {
@@ -933,7 +961,19 @@ body.presenting { overflow: hidden; }
   font-size: 1rem;
 }
 .stage-text p + p { margin-top: 0.75em; }
-.stage-text .pron { text-decoration: none; cursor: default; }
+/* A faint dashed mark on the words the pronunciation rail is listing, so the
+   eye can match them up. Only present while that rail is showing. */
+.stage-mark {
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+:root[data-contrast="high"] .stage-mark {
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--accent);
+}
 
 .stage-foot {
   display: flex;

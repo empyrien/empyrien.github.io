@@ -513,10 +513,20 @@
   <div class="stage-top">
     <span class="stage-count"></span>
     <span>
-      <button type="button" class="tool" id="stage-pron-toggle" aria-pressed="false">
-        <span class="glyph" aria-hidden="true">◉</span><span class="text">Pronunciation</span>
+      <button type="button" class="tool" id="stage-size-down" aria-label="Smaller text">A−</button>
+      <button type="button" class="tool" id="stage-size-up" aria-label="Larger text">A+</button>
+      <button type="button" class="tool" id="stage-theme" aria-label="Switch between light and dark">
+        <span class="glyph" aria-hidden="true">◐</span>
       </button>
-      <button type="button" class="tool" id="stage-close">Close</button>
+      <button type="button" class="tool" data-panel-toggle="a11y-panel" aria-label="Accessibility settings">
+        <span class="glyph" aria-hidden="true">◉</span><span class="text">Accessibility</span>
+      </button>
+      <button type="button" class="tool" id="stage-pron-toggle" aria-pressed="false">
+        <span class="glyph" aria-hidden="true">✎</span><span class="text">Pronunciation</span>
+      </button>
+      <button type="button" class="tool" id="stage-close" aria-label="Close the slideshow">
+        <span class="glyph" aria-hidden="true">✕</span><span class="text">Close</span>
+      </button>
     </span>
   </div>
 
