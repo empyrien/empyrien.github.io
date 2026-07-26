@@ -459,72 +459,13 @@
 
   var stage = document.getElementById("stage");
   var stageIndex = 0;
-  var slides = [];
 
-  /* Anything smaller than this stops being readable from across a room, so a
-     long passage is paged instead of shrunk. */
-  var MIN_FIT = 26;
-
-  /* --- breaking a reading into screen-sized pieces -------------------- */
-
-  /* Atomic units a slide can be built from: whole bilingual couplets, or
-     single sentences of English prose. Nothing smaller ever gets split. */
-  function unitsOf(body) {
-    var units = [];
-    if (!body) return units;
-
-    var couplets = body.querySelectorAll(".bl-line");
-    if (couplets.length) {
-      [].forEach.call(couplets, function (line) {
-        units.push({ node: line.cloneNode(true), weight: line.textContent.length });
-      });
-      return units;
-    }
-
-    [].forEach.call(body.querySelectorAll("p"), function (p, pi) {
-      if (p.classList.contains("bl-note")) return;
-      var text = p.textContent.replace(/\s+/g, " ").trim();
-      var parts = text.match(/[^.!?…]+[.!?…]+[”’"']*\s*|[^.!?…]+$/g) || [text];
-      parts.forEach(function (s) {
-        var t = s.trim();
-        if (t) units.push({ text: t, para: pi, weight: t.length });
-      });
-    });
-    return units;
-  }
-
-  /* Split units into `count` runs of roughly equal length, never mid-sentence.
-     Each unit lands in the run its midpoint falls into, which balances far
-     better than filling greedily and leaving the remainder in the last run. */
-  function chunk(units, count) {
-    var total = units.reduce(function (n, u) { return n + u.weight; }, 0);
-    if (!total) return [units];
-    var span = total / count;
-    var runs = [];
-    for (var i = 0; i < count; i++) runs.push([]);
-    var acc = 0;
-    units.forEach(function (u) {
-      var idx = Math.min(count - 1, Math.floor((acc + u.weight / 2) / span));
-      runs[idx].push(u);
-      acc += u.weight;
-    });
-    return runs.filter(function (r) { return r.length; });
-  }
-
-  function renderUnits(units, into) {
-    into.textContent = "";
-    var para = null;
-    var lastIndex = null;
-    units.forEach(function (u) {
-      if (u.node) { into.appendChild(u.node.cloneNode(true)); para = null; return; }
-      if (para === null || u.para !== lastIndex) {
-        para = document.createElement("p");
-        into.appendChild(para);
-        lastIndex = u.para;
-      }
-      para.textContent += (para.textContent ? " " : "") + u.text;
-    });
-  }
+  /* One slide per reading, always — the slide changes when the reader changes,
+     and nothing else. A long passage earns more of the screen's width rather
+     than being broken across screens. */
+  var WIDTH_TIERS = [50, 62, 74, 86, 96]; // percent of the viewport
+  var COMFORTABLE = 34; // px — stop widening once the text is this big
+  var FLOOR = 20;       // px — never shrink past this; let the slide scroll
 
   /* --- fitting -------------------------------------------------------- */
 
@@ -558,63 +499,39 @@
     return best;
   }
 
+  /* Give the passage as much width as it needs to stay comfortably large,
+     and no more — a short prayer keeps a narrow, composed column. */
   function fitSlide() {
     var body = stage.querySelector(".stage-body");
     var text = stage.querySelector(".stage-text");
-    if (body && text) measureFit(text, body);
-  }
+    if (!body || !text) return;
 
-  /* Work out, by measuring, how many screens each reading needs. */
-  function buildSlides() {
-    var body = stage.querySelector(".stage-body");
-    var text = stage.querySelector(".stage-text");
-    var reader = stage.querySelector(".stage-reader");
-    var source = stage.querySelector(".stage-source");
-    var rail = stage.querySelector(".stage-pron");
+    var chosen = WIDTH_TIERS[0];
+    var size = 0;
+    for (var i = 0; i < WIDTH_TIERS.length; i++) {
+      chosen = WIDTH_TIERS[i];
+      text.style.maxWidth = chosen + "vw";
+      size = measureFit(text, body);
+      if (size >= COMFORTABLE) break;
+    }
 
-    /* Measure against a worst-case header so a slide never overflows later. */
-    var railWas = rail.hidden;
-    reader.textContent = "Read by placeholder";
-    source.textContent = "measuring";
-    rail.hidden = true;
+    /* On a small screen a long passage may still not fit at a legible size.
+       Hold the floor and let it scroll rather than shrink into illegibility. */
+    var scrolls = size < FLOOR;
+    text.style.fontSize = Math.max(size, FLOOR) + "px";
+    body.classList.toggle("is-scrolling", scrolls);
+    if (scrolls) body.scrollTop = 0;
 
-    slides = [];
-    readings.forEach(function (el) {
-      var source$ = el.querySelector(".reading-text");
-      var units = unitsOf(source$);
-      if (!units.length) {
-        slides.push({ el: el, units: [], part: 1, parts: 1 });
-        return;
-      }
-      var count = 1;
-      var runs = [units];
-      while (count < units.length) {
-        runs = chunk(units, count);
-        var worst = Infinity;
-        for (var i = 0; i < runs.length; i++) {
-          renderUnits(runs[i], text);
-          worst = Math.min(worst, measureFit(text, body));
-          if (worst < MIN_FIT) break;
-        }
-        if (worst >= MIN_FIT) break;
-        count++;
-      }
-      runs.forEach(function (run, i) {
-        slides.push({ el: el, units: run, part: i + 1, parts: runs.length });
-      });
-    });
-
-    rail.hidden = railWas;
+    /* Centring reads well for a few lines; across a wide screen it makes the
+       eye hunt for the start of each line, which is fatal when reading aloud. */
+    text.classList.toggle("is-wide", chosen >= 74);
   }
 
   function renderSlide() {
-    var s = slides[stageIndex];
-    if (!s) return;
-    var el = s.el;
+    var el = readings[stageIndex];
+    if (!el) return;
 
-    var label = el.getAttribute("data-label") || "";
-    stage.querySelector(".stage-count").textContent =
-      s.parts > 1 ? label + " · part " + s.part + " of " + s.parts : label;
+    stage.querySelector(".stage-count").textContent = el.getAttribute("data-label") || "";
 
     var name = assignedTo(el);
     stage.querySelector(".stage-reader").textContent = name ? "Read by " + name : "";
@@ -625,7 +542,16 @@
       (author + (src ? " · " + src : "")).trim();
 
     var text = stage.querySelector(".stage-text");
-    renderUnits(s.units, text);
+    text.textContent = "";
+    var body$ = el.querySelector(".reading-text");
+    if (body$) {
+      var clone = body$.cloneNode(true);
+      /* Buttons inside the slide would be tab-traps on a television. */
+      [].forEach.call(clone.querySelectorAll(".pron"), function (b) {
+        b.parentNode.replaceChild(document.createTextNode(b.textContent), b);
+      });
+      while (clone.firstChild) text.appendChild(clone.firstChild);
+    }
 
     /* Optional pronunciation rail, for whoever is reading aloud. */
     var rail = stage.querySelector(".stage-pron");
@@ -661,13 +587,10 @@
   function buildDots() {
     var dots = stage.querySelector(".stage-dots");
     dots.textContent = "";
-    slides.forEach(function (s, i) {
+    readings.forEach(function (el, i) {
       var b = document.createElement("button");
       b.type = "button";
-      var label = s.el.getAttribute("data-label") || "Reading " + (i + 1);
-      b.setAttribute("aria-label", s.parts > 1 ? label + ", part " + s.part : label);
-      /* Only the first screen of a reading gets a full-strength dot. */
-      if (s.part > 1) b.style.opacity = "0.45";
+      b.setAttribute("aria-label", el.getAttribute("data-label") || "Reading " + (i + 1));
       b.addEventListener("click", function () { stageIndex = i; renderSlide(); });
       dots.appendChild(b);
     });
@@ -675,30 +598,14 @@
 
   function goTo(delta) {
     var next = stageIndex + delta;
-    if (next < 0 || next >= slides.length) return;
+    if (next < 0 || next >= readings.length) return;
     stageIndex = next;
     renderSlide();
   }
 
-  function firstSlideOf(readingIndex) {
-    for (var i = 0; i < slides.length; i++) {
-      if (slides[i].el === readings[readingIndex]) return i;
-    }
-    return 0;
-  }
-
-  /* Re-page after anything that changes how much text fits on a screen. */
+  /* Re-fit after anything that changes how much text fits on a screen. */
   function rebuildStage() {
     if (!stage || stage.hidden) return;
-    var current = slides[stageIndex] ? slides[stageIndex].el : null;
-    buildSlides();
-    buildDots();
-    stageIndex = 0;
-    if (current) {
-      for (var i = 0; i < slides.length; i++) {
-        if (slides[i].el === current) { stageIndex = i; break; }
-      }
-    }
     renderSlide();
   }
 
@@ -711,8 +618,7 @@
     lastFocus = document.activeElement;
     stage.hidden = false;
     document.body.classList.add("presenting");
-    buildSlides();
-    stageIndex = firstSlideOf(typeof startAt === "number" ? startAt : 0);
+    stageIndex = typeof startAt === "number" ? startAt : 0;
     buildDots();
     renderSlide();
     stage.querySelector("#stage-next").focus();

@@ -803,11 +803,21 @@ body.presenting { overflow: hidden; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
   color: var(--ink-faint);
   font-size: clamp(0.7rem, 1.4vw, 0.95rem);
   letter-spacing: 0.2em;
   text-transform: uppercase;
+}
+.stage-top > span:last-child { display: flex; gap: 0.4rem; flex: 0 0 auto; }
+.stage-count { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* On a phone the controls keep their icons but drop their labels, so the
+   header stays on one line and the reading keeps the height. */
+@media (max-width: 34rem) {
+  .stage-top { letter-spacing: 0.12em; }
+  .stage-top .tool { padding: 0.35rem 0.7rem; }
+  #stage-pron-toggle .text { display: none; }
 }
 
 .stage-body {
@@ -841,18 +851,39 @@ body.presenting { overflow: hidden; }
 }
 :root[data-face="legible"] .stage-source { font-family: var(--legible); }
 
+/* Width and size are both set by script: the passage takes only as much of
+   the screen as it needs to stay large, so one reading is always one slide. */
 .stage-text {
   font-family: var(--serif);
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--ink);
-  max-width: 32ch;
+  max-width: 86vw;
   margin: 0 auto;
-  /* --fit is set by script so each reading fills the screen without clipping */
-  font-size: calc(var(--fit, 3.4vw) * var(--scale));
+  font-size: 2.6vw;
+  text-wrap: pretty;
 }
-:root[data-face="legible"] .stage-text { font-family: var(--legible); max-width: 30ch; }
-:root[data-lead="loose"] .stage-text { line-height: 1.85; }
+:root[data-face="legible"] .stage-text { font-family: var(--legible); }
+:root[data-lead="loose"] .stage-text { line-height: 1.9; }
+
+.stage-text.is-wide { text-align: left; }
+.stage-text.is-wide .bl-fa { text-align: right; }
+.stage-text.is-wide .bl-en { text-align: left; }
+
+/* Only reached when a long passage meets a small screen: hold a legible size
+   and scroll rather than shrink away to nothing. */
+.stage-body.is-scrolling {
+  justify-content: flex-start;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent);
+}
+.stage-body.is-scrolling::after {
+  content: "▼";
+  flex: 0 0 auto;
+  padding-top: 0.75rem;
+  color: var(--accent);
+  font-size: 1rem;
+}
 .stage-text p + p { margin-top: 0.75em; }
 .stage-text .pron { text-decoration: none; cursor: default; }
 
