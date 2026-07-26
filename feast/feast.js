@@ -868,80 +868,199 @@
 
   /* ---------------------------------------------------------- ambient tones */
 
-  /* Generated in the browser rather than streamed, so there is no audio file
-     to load and nothing to license. Off until asked for. */
+  /* Generated in the browser rather than streamed: nothing to download,
+     nothing to license, and it never loops back on itself. Off until asked.
+
+     A held D drone with a slow-moving chord above it, in a generated hall.
+     Chords cross-fade over about ten seconds, so the harmony changes without
+     any moment that draws attention to itself, and a struck bowl sounds every
+     half-minute or so, always on a note of the chord already sounding. */
   var audio = null;
+
+  /* Upper voices over a constant D. Every one of these is consonant against
+     the drone: Dm, B♭/D, Dm7, Gm/D, D11. */
+  var CHORDS = [
+    [293.66, 349.23, 440.00], // D  F  A
+    [293.66, 349.23, 466.16], // D  F  B♭
+    [261.63, 349.23, 440.00], // C  F  A
+    [293.66, 392.00, 466.16], // D  G  B♭
+    [261.63, 329.63, 392.00]  // C  E  G
+  ];
+
+  /* Noise decaying into silence makes a serviceable hall. Smoothing it as it
+     goes keeps the tail dark rather than hissy. */
+  function makeHall(ctx, seconds, decay) {
+    var rate = ctx.sampleRate;
+    var length = Math.floor(rate * seconds);
+    var buffer = ctx.createBuffer(2, length, rate);
+    for (var ch = 0; ch < 2; ch++) {
+      var data = buffer.getChannelData(ch);
+      var smoothed = 0;
+      for (var i = 0; i < length; i++) {
+        smoothed += 0.22 * ((Math.random() * 2 - 1) - smoothed);
+        data[i] = smoothed * Math.pow(1 - i / length, decay);
+      }
+    }
+    return buffer;
+  }
 
   function startAudio(level) {
     var Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return null;
     var ctx = new Ctx();
+    if (ctx.state === "suspended" && ctx.resume) ctx.resume();
 
     var master = ctx.createGain();
-    master.gain.value = 0;
-    master.connect(ctx.destination);
+    master.gain.value = 0.0001;
 
-    var warm = ctx.createBiquadFilter();
-    warm.type = "lowpass";
-    warm.frequency.value = 760;
-    warm.Q.value = 0.4;
-    warm.connect(master);
+    /* A gentle ceiling, so this can never spike through a television. */
+    var limiter = ctx.createDynamicsCompressor();
+    limiter.threshold.value = -14;
+    limiter.knee.value = 12;
+    limiter.ratio.value = 6;
+    limiter.attack.value = 0.02;
+    limiter.release.value = 0.4;
+    master.connect(limiter);
+    limiter.connect(ctx.destination);
 
-    var reverbish = ctx.createDelay(1.2);
-    reverbish.delayTime.value = 0.42;
-    var feedback = ctx.createGain();
-    feedback.gain.value = 0.34;
-    reverbish.connect(feedback);
-    feedback.connect(reverbish);
-    reverbish.connect(master);
+    /* One very slow swell across everything, like breathing. */
+    var breath = ctx.createGain();
+    breath.gain.value = 1;
+    breath.connect(master);
+    var lung = ctx.createOscillator();
+    lung.frequency.value = 0.055;
+    var lungDepth = ctx.createGain();
+    lungDepth.gain.value = 0.15;
+    lung.connect(lungDepth);
+    lungDepth.connect(breath.gain);
+    lung.start();
 
-    /* A slow drone: root, fifth, octave — a still, open chord. */
-    var voices = [110, 164.81, 220].map(function (freq, i) {
-      var osc = ctx.createOscillator();
-      osc.type = i === 2 ? "triangle" : "sine";
-      osc.frequency.value = freq;
+    var dry = ctx.createGain();
+    dry.gain.value = 0.5;
+    dry.connect(breath);
 
+    var hall = ctx.createConvolver();
+    hall.buffer = makeHall(ctx, 5.5, 2.6);
+    var wet = ctx.createGain();
+    wet.gain.value = 0.9;
+    hall.connect(wet);
+    wet.connect(breath);
+
+    var bus = ctx.createGain();
+    bus.connect(dry);
+    bus.connect(hall);
+
+    /* --- a sustained voice ------------------------------------------- */
+
+    function pad(freq, peak, fade) {
+      var out = ctx.createGain();
+      out.gain.setValueAtTime(0.0001, ctx.currentTime);
+      out.gain.exponentialRampToValueAtTime(peak, ctx.currentTime + fade);
+
+      var tone = ctx.createBiquadFilter();
+      tone.type = "lowpass";
+      tone.frequency.value = Math.min(2400, freq * 5.5);
+      tone.Q.value = 0.3;
+      tone.connect(out);
+      out.connect(bus);
+
+      /* Three slightly separated partials give it body; the detuning is what
+         keeps it from sounding like a bare oscillator. */
+      var oscs = [];
+      [[0, "sine", 1], [-6, "triangle", 0.34], [8, "sine", 0.28]].forEach(function (spec) {
+        var osc = ctx.createOscillator();
+        osc.type = spec[1];
+        osc.frequency.value = freq;
+        osc.detune.value = spec[0];
+        var g = ctx.createGain();
+        g.gain.value = spec[2];
+        osc.connect(g);
+        g.connect(tone);
+        osc.start();
+        oscs.push(osc);
+      });
+
+      /* A touch of wander, so no two moments are identical. */
       var drift = ctx.createOscillator();
-      drift.type = "sine";
-      drift.frequency.value = 0.03 + i * 0.017;
-      var driftAmt = ctx.createGain();
-      driftAmt.gain.value = 3.5;
-      drift.connect(driftAmt);
-      driftAmt.connect(osc.detune);
-
-      var g = ctx.createGain();
-      g.gain.value = [0.5, 0.3, 0.16][i];
-      osc.connect(g);
-      g.connect(warm);
-
-      osc.start();
+      drift.frequency.value = 0.03 + Math.random() * 0.04;
+      var driftDepth = ctx.createGain();
+      driftDepth.gain.value = 3;
+      drift.connect(driftDepth);
+      oscs.forEach(function (o) { driftDepth.connect(o.detune); });
       drift.start();
-      return osc;
-    });
 
-    /* Occasional soft bells from a pentatonic scale. */
-    var PENT = [440, 523.25, 587.33, 659.25, 783.99];
-    var bellTimer = null;
-    function bell() {
-      var osc = ctx.createOscillator();
-      osc.type = "sine";
-      osc.frequency.value = PENT[Math.floor(Math.random() * PENT.length)];
-      var g = ctx.createGain();
-      var now = ctx.currentTime;
-      g.gain.setValueAtTime(0.0001, now);
-      g.gain.exponentialRampToValueAtTime(0.16, now + 0.08);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + 5);
-      osc.connect(g);
-      g.connect(reverbish);
-      g.connect(master);
-      osc.start(now);
-      osc.stop(now + 5.2);
-      bellTimer = setTimeout(bell, 9000 + Math.random() * 12000);
+      return {
+        release: function (seconds) {
+          var t = ctx.currentTime;
+          out.gain.cancelScheduledValues(t);
+          out.gain.setValueAtTime(Math.max(out.gain.value, 0.0001), t);
+          out.gain.exponentialRampToValueAtTime(0.0001, t + seconds);
+          oscs.forEach(function (o) { try { o.stop(t + seconds + 0.4); } catch (e) {} });
+          try { drift.stop(t + seconds + 0.4); } catch (e) {}
+        },
+        stopNow: function () {
+          oscs.forEach(function (o) { try { o.stop(); } catch (e) {} });
+          try { drift.stop(); } catch (e) {}
+        }
+      };
     }
-    bellTimer = setTimeout(bell, 4000);
 
-    master.gain.setValueAtTime(0.0001, ctx.currentTime);
-    master.gain.exponentialRampToValueAtTime(Math.max(0.0002, level), ctx.currentTime + 4);
+    /* The drone never changes; it is what holds the whole thing still. */
+    var drone = [pad(73.42, 0.20, 6), pad(146.83, 0.13, 6)];
+
+    /* --- the chord above it ------------------------------------------- */
+
+    var CROSSFADE = 10;
+    var chordIndex = 0;
+    var voices = [];
+    var chordTimer = null;
+
+    function takeChord(index) {
+      var leaving = voices;
+      chordIndex = index;
+      voices = CHORDS[index].map(function (freq, i) {
+        return pad(freq, [0.115, 0.095, 0.075][i], CROSSFADE);
+      });
+      leaving.forEach(function (v) { v.release(CROSSFADE); });
+    }
+
+    function wander() {
+      var next = chordIndex;
+      while (next === chordIndex) next = Math.floor(Math.random() * CHORDS.length);
+      takeChord(next);
+      chordTimer = setTimeout(wander, 28000 + Math.random() * 16000);
+    }
+
+    takeChord(0);
+    chordTimer = setTimeout(wander, 30000);
+
+    /* --- an occasional struck bowl ------------------------------------ */
+
+    /* Inharmonic partials in roughly the ratios a struck bowl gives, the
+       higher ones dying away first. */
+    var BOWL = [[1, 1, 12], [2.76, 0.36, 7], [5.40, 0.16, 4.5], [8.93, 0.08, 2.6]];
+    var bowlTimer = null;
+
+    function bowl() {
+      var note = CHORDS[chordIndex][Math.floor(Math.random() * 3)] * 2;
+      var t = ctx.currentTime;
+      BOWL.forEach(function (p) {
+        var osc = ctx.createOscillator();
+        osc.frequency.value = note * p[0];
+        var g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(p[1] * 0.13, t + 0.3); // sounded, not hit
+        g.gain.exponentialRampToValueAtTime(0.0001, t + p[2]);
+        osc.connect(g);
+        g.connect(bus);
+        osc.start(t);
+        osc.stop(t + p[2] + 0.2);
+      });
+      bowlTimer = setTimeout(bowl, 26000 + Math.random() * 24000);
+    }
+    bowlTimer = setTimeout(bowl, 12000);
+
+    master.gain.exponentialRampToValueAtTime(Math.max(0.0002, level), ctx.currentTime + 5);
 
     return {
       ctx: ctx,
@@ -951,13 +1070,16 @@
         master.gain.setTargetAtTime(Math.max(0.0001, v), ctx.currentTime, 0.3);
       },
       stop: function () {
-        clearTimeout(bellTimer);
-        master.gain.cancelScheduledValues(ctx.currentTime);
-        master.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.5);
+        clearTimeout(chordTimer);
+        clearTimeout(bowlTimer);
+        var t = ctx.currentTime;
+        master.gain.cancelScheduledValues(t);
+        master.gain.setTargetAtTime(0.0001, t, 0.5);
         setTimeout(function () {
-          voices.forEach(function (o) { try { o.stop(); } catch (e) {} });
-          ctx.close();
-        }, 2000);
+          drone.concat(voices).forEach(function (v) { v.stopNow(); });
+          try { lung.stop(); } catch (e) {}
+          if (ctx.close) ctx.close();
+        }, 2600);
       }
     };
   }
@@ -966,7 +1088,7 @@
   var audioVol = document.getElementById("audio-volume");
 
   function level() {
-    return audioVol ? (Number(audioVol.value) / 100) * 0.13 : 0.06;
+    return audioVol ? (Number(audioVol.value) / 100) * 0.17 : 0.08;
   }
 
   if (audioBtn) {
