@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feast of Kalimát — Empyrien</title>
+<meta name="description" content="A devotional programme of nine readings on the power of the Word, for the Bahá’í Feast of Kalimát.">
+<meta name="theme-color" content="#faf8f5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&family=Atkinson+Hyperlegible:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body data-program="kalimat">
+<a class="skip-link" href="#readings">Skip to the readings</a>
+
+<header class="masthead">
+  <p class="eyebrow"><a href="/feast/">Feast programmes</a> · <a href="/">Empyrien</a></p>
+  <h1>Feast of Kalimát</h1>
+  <p class="translation">the Month of Words</p>
+  <!-- Edit this line each year: 1 Kalimát of the current Bahá’í year. -->
+  <p class="dateline">1 Kalimát 183 B.E. · 13 July 2026</p>
+  <p class="ornament" aria-hidden="true">✦ ✦ ✦</p>
+</header>
+
+<nav class="toolbar" aria-label="Programme controls">
+  <button type="button" class="tool tool-primary" id="present-start">
+    <span class="glyph" aria-hidden="true">▶</span><span class="text">Slideshow</span>
+  </button>
+  <button type="button" class="tool" id="theme-toggle" aria-pressed="false">
+    <span class="glyph" aria-hidden="true">◐</span><span class="text">Dark</span>
+  </button>
+  <button type="button" class="tool" data-panel-toggle="readers-panel">
+    <span class="glyph" aria-hidden="true">☺</span><span class="text">Readers</span>
+  </button>
+  <button type="button" class="tool" data-panel-toggle="a11y-panel">
+    <span class="glyph" aria-hidden="true">◉</span><span class="text">Accessibility</span>
+  </button>
+  <button type="button" class="tool" id="audio-toggle" aria-pressed="false">
+    <span class="glyph" aria-hidden="true">♫</span><span class="text">Ambience</span>
+  </button>
+  <label class="visually-hidden" for="audio-volume">Ambience volume</label>
+  <input type="range" id="audio-volume" min="0" max="100" value="45" step="1" style="width:6rem">
+</nav>
+
+<!-- ------------------------------------------------------ readers -->
+<section class="panel readers-panel" id="readers-panel" hidden aria-label="Assign readers">
+  <h2>Who is reading</h2>
+  <div class="roster" id="roster"></div>
+  <form class="add-reader" id="add-reader">
+    <label class="visually-hidden" for="reader-input">Add a reader’s name</label>
+    <input type="text" id="reader-input" placeholder="Add a name — or several, separated by commas" autocomplete="off">
+    <button type="submit" class="tool tool-primary">Add</button>
+  </form>
+  <div class="panel-actions">
+    <button type="button" class="tool" id="assign-round">Share out in order</button>
+    <button type="button" class="tool" id="assign-shuffle">Shuffle</button>
+    <button type="button" class="tool" id="assign-clear">Clear assignments</button>
+  </div>
+  <p class="hint">Each reading also has its own <em>Reader</em> menu. Names and assignments are
+  kept on this device only — nothing is uploaded. Whoever is assigned appears above the text
+  in the slideshow.</p>
+</section>
+
+<!-- ------------------------------------------------------ accessibility -->
+<section class="panel" id="a11y-panel" hidden aria-label="Display and accessibility settings">
+  <h2>Reading comfort</h2>
+
+  <div class="panel-row">
+    <span class="label" id="lbl-size">Text size</span>
+    <div class="seg" role="group" aria-labelledby="lbl-size">
+      <button type="button" id="size-down" aria-label="Smaller text">A−</button>
+      <button type="button" id="size-up" aria-label="Larger text">A+</button>
+    </div>
+    <span class="size-readout" id="size-readout" aria-live="polite">100%</span>
+  </div>
+
+  <div class="panel-row">
+    <span class="label" id="lbl-contrast">Contrast</span>
+    <div class="seg" role="group" aria-labelledby="lbl-contrast">
+      <button type="button" data-pref="contrast" data-value="normal">Normal</button>
+      <button type="button" data-pref="contrast" data-value="high">High</button>
+    </div>
+  </div>
+
+  <div class="panel-row">
+    <span class="label" id="lbl-face">Typeface</span>
+    <div class="seg" role="group" aria-labelledby="lbl-face">
+      <button type="button" data-pref="face" data-value="serif">Serif</button>
+      <button type="button" data-pref="face" data-value="legible">Easy-read</button>
+    </div>
+  </div>
+
+  <div class="panel-row">
+    <span class="label" id="lbl-lead">Line spacing</span>
+    <div class="seg" role="group" aria-labelledby="lbl-lead">
+      <button type="button" data-pref="lead" data-value="normal">Normal</button>
+      <button type="button" data-pref="lead" data-value="loose">Loose</button>
+    </div>
+  </div>
+
+  <div class="panel-actions">
+    <button type="button" class="tool" id="prefs-reset">Reset to defaults</button>
+  </div>
+  <p class="hint">“Easy-read” uses Atkinson Hyperlegible, a typeface drawn by the Braille
+  Institute so that similar letters stay distinguishable at low vision. Settings are
+  remembered on this device and apply to the slideshow too.</p>
+</section>
+
+<main class="container container-wide" id="readings">
+
+  <!-- ------------------------------------------------------ QR -->
+  <div class="qr-panel">
+    <div class="qr-frame">
+      <svg class="qr" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QR code linking to this page"><rect class="qbg" x="0" y="0" width="45" height="45" rx="3"/><g class="qm"><rect x="13" y="4" width="1" height="1" rx="0.26"/><rect x="14" y="4" width="1" height="1" rx="0.26"/><rect x="15" y="4" width="1" height="1" rx="0.26"/><rect x="17" y="4" width="1" height="1" rx="0.26"/><rect x="22" y="4" width="1" height="1" rx="0.26"/><rect x="23" y="4" width="1" height="1" rx="0.26"/><rect x="25" y="4" width="1" height="1" rx="0.26"/><rect x="28" y="4" width="1" height="1" rx="0.26"/><rect x="29" y="4" width="1" height="1" rx="0.26"/><rect x="30" y="4" width="1" height="1" rx="0.26"/><rect x="31" y="4" width="1" height="1" rx="0.26"/><rect x="32" y="4" width="1" height="1" rx="0.26"/><rect x="12" y="5" width="1" height="1" rx="0.26"/><rect x="15" y="5" width="1" height="1" rx="0.26"/><rect x="16" y="5" width="1" height="1" rx="0.26"/><rect x="19" y="5" width="1" height="1" rx="0.26"/><rect x="22" y="5" width="1" height="1" rx="0.26"/><rect x="28" y="5" width="1" height="1" rx="0.26"/><rect x="29" y="5" width="1" height="1" rx="0.26"/><rect x="30" y="5" width="1" height="1" rx="0.26"/><rect x="32" y="5" width="1" height="1" rx="0.26"/><rect x="13" y="6" width="1" height="1" rx="0.26"/><rect x="14" y="6" width="1" height="1" rx="0.26"/><rect x="19" y="6" width="1" height="1" rx="0.26"/><rect x="20" y="6" width="1" height="1" rx="0.26"/><rect x="21" y="6" width="1" height="1" rx="0.26"/><rect x="25" y="6" width="1" height="1" rx="0.26"/><rect x="30" y="6" width="1" height="1" rx="0.26"/><rect x="32" y="6" width="1" height="1" rx="0.26"/><rect x="13" y="7" width="1" height="1" rx="0.26"/><rect x="14" y="7" width="1" height="1" rx="0.26"/><rect x="20" y="7" width="1" height="1" rx="0.26"/><rect x="23" y="7" width="1" height="1" rx="0.26"/><rect x="24" y="7" width="1" height="1" rx="0.26"/><rect x="26" y="7" width="1" height="1" rx="0.26"/><rect x="28" y="7" width="1" height="1" rx="0.26"/><rect x="29" y="7" width="1" height="1" rx="0.26"/><rect x="30" y="7" width="1" height="1" rx="0.26"/><rect x="31" y="7" width="1" height="1" rx="0.26"/><rect x="32" y="7" width="1" height="1" rx="0.26"/><rect x="13" y="8" width="1" height="1" rx="0.26"/><rect x="16" y="8" width="1" height="1" rx="0.26"/><rect x="17" y="8" width="1" height="1" rx="0.26"/><rect x="19" y="8" width="1" height="1" rx="0.26"/><rect x="23" y="8" width="1" height="1" rx="0.26"/><rect x="24" y="8" width="1" height="1" rx="0.26"/><rect x="25" y="8" width="1" height="1" rx="0.26"/><rect x="30" y="8" width="1" height="1" rx="0.26"/><rect x="31" y="8" width="1" height="1" rx="0.26"/><rect x="12" y="9" width="1" height="1" rx="0.26"/><rect x="15" y="9" width="1" height="1" rx="0.26"/><rect x="19" y="9" width="1" height="1" rx="0.26"/><rect x="21" y="9" width="1" height="1" rx="0.26"/><rect x="22" y="9" width="1" height="1" rx="0.26"/><rect x="25" y="9" width="1" height="1" rx="0.26"/><rect x="27" y="9" width="1" height="1" rx="0.26"/><rect x="28" y="9" width="1" height="1" rx="0.26"/><rect x="32" y="9" width="1" height="1" rx="0.26"/><rect x="12" y="10" width="1" height="1" rx="0.26"/><rect x="14" y="10" width="1" height="1" rx="0.26"/><rect x="16" y="10" width="1" height="1" rx="0.26"/><rect x="18" y="10" width="1" height="1" rx="0.26"/><rect x="20" y="10" width="1" height="1" rx="0.26"/><rect x="22" y="10" width="1" height="1" rx="0.26"/><rect x="24" y="10" width="1" height="1" rx="0.26"/><rect x="26" y="10" width="1" height="1" rx="0.26"/><rect x="28" y="10" width="1" height="1" rx="0.26"/><rect x="30" y="10" width="1" height="1" rx="0.26"/><rect x="32" y="10" width="1" height="1" rx="0.26"/><rect x="12" y="11" width="1" height="1" rx="0.26"/><rect x="13" y="11" width="1" height="1" rx="0.26"/><rect x="14" y="11" width="1" height="1" rx="0.26"/><rect x="15" y="11" width="1" height="1" rx="0.26"/><rect x="16" y="11" width="1" height="1" rx="0.26"/><rect x="17" y="11" width="1" height="1" rx="0.26"/><rect x="19" y="11" width="1" height="1" rx="0.26"/><rect x="20" y="11" width="1" height="1" rx="0.26"/><rect x="21" y="11" width="1" height="1" rx="0.26"/><rect x="22" y="11" width="1" height="1" rx="0.26"/><rect x="25" y="11" width="1" height="1" rx="0.26"/><rect x="26" y="11" width="1" height="1" rx="0.26"/><rect x="27" y="11" width="1" height="1" rx="0.26"/><rect x="28" y="11" width="1" height="1" rx="0.26"/><rect x="29" y="11" width="1" height="1" rx="0.26"/><rect x="8" y="12" width="1" height="1" rx="0.26"/><rect x="9" y="12" width="1" height="1" rx="0.26"/><rect x="10" y="12" width="1" height="1" rx="0.26"/><rect x="11" y="12" width="1" height="1" rx="0.26"/><rect x="13" y="12" width="1" height="1" rx="0.26"/><rect x="14" y="12" width="1" height="1" rx="0.26"/><rect x="16" y="12" width="1" height="1" rx="0.26"/><rect x="17" y="12" width="1" height="1" rx="0.26"/><rect x="19" y="12" width="1" height="1" rx="0.26"/><rect x="21" y="12" width="1" height="1" rx="0.26"/><rect x="25" y="12" width="1" height="1" rx="0.26"/><rect x="27" y="12" width="1" height="1" rx="0.26"/><rect x="28" y="12" width="1" height="1" rx="0.26"/><rect x="29" y="12" width="1" height="1" rx="0.26"/><rect x="31" y="12" width="1" height="1" rx="0.26"/><rect x="32" y="12" width="1" height="1" rx="0.26"/><rect x="34" y="12" width="1" height="1" rx="0.26"/><rect x="35" y="12" width="1" height="1" rx="0.26"/><rect x="39" y="12" width="1" height="1" rx="0.26"/><rect x="5" y="13" width="1" height="1" rx="0.26"/><rect x="9" y="13" width="1" height="1" rx="0.26"/><rect x="12" y="13" width="1" height="1" rx="0.26"/><rect x="13" y="13" width="1" height="1" rx="0.26"/><rect x="17" y="13" width="1" height="1" rx="0.26"/><rect x="19" y="13" width="1" height="1" rx="0.26"/><rect x="20" y="13" width="1" height="1" rx="0.26"/><rect x="24" y="13" width="1" height="1" rx="0.26"/><rect x="25" y="13" width="1" height="1" rx="0.26"/><rect x="26" y="13" width="1" height="1" rx="0.26"/><rect x="30" y="13" width="1" height="1" rx="0.26"/><rect x="34" y="13" width="1" height="1" rx="0.26"/><rect x="37" y="13" width="1" height="1" rx="0.26"/><rect x="7" y="14" width="1" height="1" rx="0.26"/><rect x="8" y="14" width="1" height="1" rx="0.26"/><rect x="9" y="14" width="1" height="1" rx="0.26"/><rect x="10" y="14" width="1" height="1" rx="0.26"/><rect x="12" y="14" width="1" height="1" rx="0.26"/><rect x="15" y="14" width="1" height="1" rx="0.26"/><rect x="17" y="14" width="1" height="1" rx="0.26"/><rect x="20" y="14" width="1" height="1" rx="0.26"/><rect x="22" y="14" width="1" height="1" rx="0.26"/><rect x="24" y="14" width="1" height="1" rx="0.26"/><rect x="25" y="14" width="1" height="1" rx="0.26"/><rect x="27" y="14" width="1" height="1" rx="0.26"/><rect x="28" y="14" width="1" height="1" rx="0.26"/><rect x="29" y="14" width="1" height="1" rx="0.26"/><rect x="30" y="14" width="1" height="1" rx="0.26"/><rect x="31" y="14" width="1" height="1" rx="0.26"/><rect x="33" y="14" width="1" height="1" rx="0.26"/><rect x="36" y="14" width="1" height="1" rx="0.26"/><rect x="37" y="14" width="1" height="1" rx="0.26"/><rect x="38" y="14" width="1" height="1" rx="0.26"/><rect x="6" y="15" width="1" height="1" rx="0.26"/><rect x="7" y="15" width="1" height="1" rx="0.26"/><rect x="13" y="15" width="1" height="1" rx="0.26"/><rect x="15" y="15" width="1" height="1" rx="0.26"/><rect x="16" y="15" width="1" height="1" rx="0.26"/><rect x="19" y="15" width="1" height="1" rx="0.26"/><rect x="21" y="15" width="1" height="1" rx="0.26"/><rect x="23" y="15" width="1" height="1" rx="0.26"/><rect x="26" y="15" width="1" height="1" rx="0.26"/><rect x="30" y="15" width="1" height="1" rx="0.26"/><rect x="31" y="15" width="1" height="1" rx="0.26"/><rect x="32" y="15" width="1" height="1" rx="0.26"/><rect x="33" y="15" width="1" height="1" rx="0.26"/><rect x="35" y="15" width="1" height="1" rx="0.26"/><rect x="36" y="15" width="1" height="1" rx="0.26"/><rect x="37" y="15" width="1" height="1" rx="0.26"/><rect x="38" y="15" width="1" height="1" rx="0.26"/><rect x="39" y="15" width="1" height="1" rx="0.26"/><rect x="40" y="15" width="1" height="1" rx="0.26"/><rect x="6" y="16" width="1" height="1" rx="0.26"/><rect x="7" y="16" width="1" height="1" rx="0.26"/><rect x="10" y="16" width="1" height="1" rx="0.26"/><rect x="14" y="16" width="1" height="1" rx="0.26"/><rect x="17" y="16" width="1" height="1" rx="0.26"/><rect x="18" y="16" width="1" height="1" rx="0.26"/><rect x="21" y="16" width="1" height="1" rx="0.26"/><rect x="22" y="16" width="1" height="1" rx="0.26"/><rect x="23" y="16" width="1" height="1" rx="0.26"/><rect x="25" y="16" width="1" height="1" rx="0.26"/><rect x="27" y="16" width="1" height="1" rx="0.26"/><rect x="28" y="16" width="1" height="1" rx="0.26"/><rect x="33" y="16" width="1" height="1" rx="0.26"/><rect x="34" y="16" width="1" height="1" rx="0.26"/><rect x="38" y="16" width="1" height="1" rx="0.26"/><rect x="39" y="16" width="1" height="1" rx="0.26"/><rect x="40" y="16" width="1" height="1" rx="0.26"/><rect x="5" y="17" width="1" height="1" rx="0.26"/><rect x="6" y="17" width="1" height="1" rx="0.26"/><rect x="7" y="17" width="1" height="1" rx="0.26"/><rect x="9" y="17" width="1" height="1" rx="0.26"/><rect x="13" y="17" width="1" height="1" rx="0.26"/><rect x="14" y="17" width="1" height="1" rx="0.26"/><rect x="16" y="17" width="1" height="1" rx="0.26"/><rect x="17" y="17" width="1" height="1" rx="0.26"/><rect x="18" y="17" width="1" height="1" rx="0.26"/><rect x="19" y="17" width="1" height="1" rx="0.26"/><rect x="21" y="17" width="1" height="1" rx="0.26"/><rect x="23" y="17" width="1" height="1" rx="0.26"/><rect x="25" y="17" width="1" height="1" rx="0.26"/><rect x="26" y="17" width="1" height="1" rx="0.26"/><rect x="28" y="17" width="1" height="1" rx="0.26"/><rect x="30" y="17" width="1" height="1" rx="0.26"/><rect x="31" y="17" width="1" height="1" rx="0.26"/><rect x="32" y="17" width="1" height="1" rx="0.26"/><rect x="33" y="17" width="1" height="1" rx="0.26"/><rect x="36" y="17" width="1" height="1" rx="0.26"/><rect x="38" y="17" width="1" height="1" rx="0.26"/><rect x="39" y="17" width="1" height="1" rx="0.26"/><rect x="6" y="18" width="1" height="1" rx="0.26"/><rect x="9" y="18" width="1" height="1" rx="0.26"/><rect x="10" y="18" width="1" height="1" rx="0.26"/><rect x="11" y="18" width="1" height="1" rx="0.26"/><rect x="12" y="18" width="1" height="1" rx="0.26"/><rect x="14" y="18" width="1" height="1" rx="0.26"/><rect x="15" y="18" width="1" height="1" rx="0.26"/><rect x="22" y="18" width="1" height="1" rx="0.26"/><rect x="23" y="18" width="1" height="1" rx="0.26"/><rect x="24" y="18" width="1" height="1" rx="0.26"/><rect x="27" y="18" width="1" height="1" rx="0.26"/><rect x="28" y="18" width="1" height="1" rx="0.26"/><rect x="29" y="18" width="1" height="1" rx="0.26"/><rect x="30" y="18" width="1" height="1" rx="0.26"/><rect x="31" y="18" width="1" height="1" rx="0.26"/><rect x="35" y="18" width="1" height="1" rx="0.26"/><rect x="36" y="18" width="1" height="1" rx="0.26"/><rect x="37" y="18" width="1" height="1" rx="0.26"/><rect x="38" y="18" width="1" height="1" rx="0.26"/><rect x="4" y="19" width="1" height="1" rx="0.26"/><rect x="6" y="19" width="1" height="1" rx="0.26"/><rect x="8" y="19" width="1" height="1" rx="0.26"/><rect x="9" y="19" width="1" height="1" rx="0.26"/><rect x="12" y="19" width="1" height="1" rx="0.26"/><rect x="13" y="19" width="1" height="1" rx="0.26"/><rect x="14" y="19" width="1" height="1" rx="0.26"/><rect x="15" y="19" width="1" height="1" rx="0.26"/><rect x="17" y="19" width="1" height="1" rx="0.26"/><rect x="18" y="19" width="1" height="1" rx="0.26"/><rect x="20" y="19" width="1" height="1" rx="0.26"/><rect x="21" y="19" width="1" height="1" rx="0.26"/><rect x="22" y="19" width="1" height="1" rx="0.26"/><rect x="23" y="19" width="1" height="1" rx="0.26"/><rect x="24" y="19" width="1" height="1" rx="0.26"/><rect x="25" y="19" width="1" height="1" rx="0.26"/><rect x="27" y="19" width="1" height="1" rx="0.26"/><rect x="28" y="19" width="1" height="1" rx="0.26"/><rect x="30" y="19" width="1" height="1" rx="0.26"/><rect x="32" y="19" width="1" height="1" rx="0.26"/><rect x="38" y="19" width="1" height="1" rx="0.26"/><rect x="39" y="19" width="1" height="1" rx="0.26"/><rect x="5" y="20" width="1" height="1" rx="0.26"/><rect x="6" y="20" width="1" height="1" rx="0.26"/><rect x="10" y="20" width="1" height="1" rx="0.26"/><rect x="11" y="20" width="1" height="1" rx="0.26"/><rect x="12" y="20" width="1" height="1" rx="0.26"/><rect x="17" y="20" width="1" height="1" rx="0.26"/><rect x="18" y="20" width="1" height="1" rx="0.26"/><rect x="19" y="20" width="1" height="1" rx="0.26"/><rect x="24" y="20" width="1" height="1" rx="0.26"/><rect x="25" y="20" width="1" height="1" rx="0.26"/><rect x="28" y="20" width="1" height="1" rx="0.26"/><rect x="31" y="20" width="1" height="1" rx="0.26"/><rect x="33" y="20" width="1" height="1" rx="0.26"/><rect x="34" y="20" width="1" height="1" rx="0.26"/><rect x="35" y="20" width="1" height="1" rx="0.26"/><rect x="37" y="20" width="1" height="1" rx="0.26"/><rect x="38" y="20" width="1" height="1" rx="0.26"/><rect x="40" y="20" width="1" height="1" rx="0.26"/><rect x="4" y="21" width="1" height="1" rx="0.26"/><rect x="7" y="21" width="1" height="1" rx="0.26"/><rect x="12" y="21" width="1" height="1" rx="0.26"/><rect x="15" y="21" width="1" height="1" rx="0.26"/><rect x="17" y="21" width="1" height="1" rx="0.26"/><rect x="20" y="21" width="1" height="1" rx="0.26"/><rect x="23" y="21" width="1" height="1" rx="0.26"/><rect x="24" y="21" width="1" height="1" rx="0.26"/><rect x="25" y="21" width="1" height="1" rx="0.26"/><rect x="30" y="21" width="1" height="1" rx="0.26"/><rect x="31" y="21" width="1" height="1" rx="0.26"/><rect x="32" y="21" width="1" height="1" rx="0.26"/><rect x="36" y="21" width="1" height="1" rx="0.26"/><rect x="38" y="21" width="1" height="1" rx="0.26"/><rect x="7" y="22" width="1" height="1" rx="0.26"/><rect x="10" y="22" width="1" height="1" rx="0.26"/><rect x="13" y="22" width="1" height="1" rx="0.26"/><rect x="14" y="22" width="1" height="1" rx="0.26"/><rect x="15" y="22" width="1" height="1" rx="0.26"/><rect x="16" y="22" width="1" height="1" rx="0.26"/><rect x="24" y="22" width="1" height="1" rx="0.26"/><rect x="25" y="22" width="1" height="1" rx="0.26"/><rect x="26" y="22" width="1" height="1" rx="0.26"/><rect x="30" y="22" width="1" height="1" rx="0.26"/><rect x="31" y="22" width="1" height="1" rx="0.26"/><rect x="32" y="22" width="1" height="1" rx="0.26"/><rect x="35" y="22" width="1" height="1" rx="0.26"/><rect x="38" y="22" width="1" height="1" rx="0.26"/><rect x="4" y="23" width="1" height="1" rx="0.26"/><rect x="5" y="23" width="1" height="1" rx="0.26"/><rect x="8" y="23" width="1" height="1" rx="0.26"/><rect x="9" y="23" width="1" height="1" rx="0.26"/><rect x="12" y="23" width="1" height="1" rx="0.26"/><rect x="14" y="23" width="1" height="1" rx="0.26"/><rect x="19" y="23" width="1" height="1" rx="0.26"/><rect x="20" y="23" width="1" height="1" rx="0.26"/><rect x="21" y="23" width="1" height="1" rx="0.26"/><rect x="25" y="23" width="1" height="1" rx="0.26"/><rect x="26" y="23" width="1" height="1" rx="0.26"/><rect x="28" y="23" width="1" height="1" rx="0.26"/><rect x="33" y="23" width="1" height="1" rx="0.26"/><rect x="36" y="23" width="1" height="1" rx="0.26"/><rect x="38" y="23" width="1" height="1" rx="0.26"/><rect x="40" y="23" width="1" height="1" rx="0.26"/><rect x="4" y="24" width="1" height="1" rx="0.26"/><rect x="8" y="24" width="1" height="1" rx="0.26"/><rect x="10" y="24" width="1" height="1" rx="0.26"/><rect x="11" y="24" width="1" height="1" rx="0.26"/><rect x="14" y="24" width="1" height="1" rx="0.26"/><rect x="15" y="24" width="1" height="1" rx="0.26"/><rect x="17" y="24" width="1" height="1" rx="0.26"/><rect x="22" y="24" width="1" height="1" rx="0.26"/><rect x="24" y="24" width="1" height="1" rx="0.26"/><rect x="26" y="24" width="1" height="1" rx="0.26"/><rect x="28" y="24" width="1" height="1" rx="0.26"/><rect x="31" y="24" width="1" height="1" rx="0.26"/><rect x="34" y="24" width="1" height="1" rx="0.26"/><rect x="37" y="24" width="1" height="1" rx="0.26"/><rect x="38" y="24" width="1" height="1" rx="0.26"/><rect x="40" y="24" width="1" height="1" rx="0.26"/><rect x="4" y="25" width="1" height="1" rx="0.26"/><rect x="5" y="25" width="1" height="1" rx="0.26"/><rect x="8" y="25" width="1" height="1" rx="0.26"/><rect x="11" y="25" width="1" height="1" rx="0.26"/><rect x="12" y="25" width="1" height="1" rx="0.26"/><rect x="13" y="25" width="1" height="1" rx="0.26"/><rect x="14" y="25" width="1" height="1" rx="0.26"/><rect x="15" y="25" width="1" height="1" rx="0.26"/><rect x="16" y="25" width="1" height="1" rx="0.26"/><rect x="17" y="25" width="1" height="1" rx="0.26"/><rect x="19" y="25" width="1" height="1" rx="0.26"/><rect x="20" y="25" width="1" height="1" rx="0.26"/><rect x="22" y="25" width="1" height="1" rx="0.26"/><rect x="24" y="25" width="1" height="1" rx="0.26"/><rect x="27" y="25" width="1" height="1" rx="0.26"/><rect x="29" y="25" width="1" height="1" rx="0.26"/><rect x="30" y="25" width="1" height="1" rx="0.26"/><rect x="31" y="25" width="1" height="1" rx="0.26"/><rect x="36" y="25" width="1" height="1" rx="0.26"/><rect x="37" y="25" width="1" height="1" rx="0.26"/><rect x="39" y="25" width="1" height="1" rx="0.26"/><rect x="6" y="26" width="1" height="1" rx="0.26"/><rect x="7" y="26" width="1" height="1" rx="0.26"/><rect x="9" y="26" width="1" height="1" rx="0.26"/><rect x="10" y="26" width="1" height="1" rx="0.26"/><rect x="12" y="26" width="1" height="1" rx="0.26"/><rect x="14" y="26" width="1" height="1" rx="0.26"/><rect x="15" y="26" width="1" height="1" rx="0.26"/><rect x="17" y="26" width="1" height="1" rx="0.26"/><rect x="18" y="26" width="1" height="1" rx="0.26"/><rect x="19" y="26" width="1" height="1" rx="0.26"/><rect x="20" y="26" width="1" height="1" rx="0.26"/><rect x="23" y="26" width="1" height="1" rx="0.26"/><rect x="24" y="26" width="1" height="1" rx="0.26"/><rect x="28" y="26" width="1" height="1" rx="0.26"/><rect x="31" y="26" width="1" height="1" rx="0.26"/><rect x="32" y="26" width="1" height="1" rx="0.26"/><rect x="33" y="26" width="1" height="1" rx="0.26"/><rect x="38" y="26" width="1" height="1" rx="0.26"/><rect x="4" y="27" width="1" height="1" rx="0.26"/><rect x="5" y="27" width="1" height="1" rx="0.26"/><rect x="7" y="27" width="1" height="1" rx="0.26"/><rect x="12" y="27" width="1" height="1" rx="0.26"/><rect x="14" y="27" width="1" height="1" rx="0.26"/><rect x="15" y="27" width="1" height="1" rx="0.26"/><rect x="17" y="27" width="1" height="1" rx="0.26"/><rect x="19" y="27" width="1" height="1" rx="0.26"/><rect x="20" y="27" width="1" height="1" rx="0.26"/><rect x="22" y="27" width="1" height="1" rx="0.26"/><rect x="26" y="27" width="1" height="1" rx="0.26"/><rect x="27" y="27" width="1" height="1" rx="0.26"/><rect x="30" y="27" width="1" height="1" rx="0.26"/><rect x="32" y="27" width="1" height="1" rx="0.26"/><rect x="35" y="27" width="1" height="1" rx="0.26"/><rect x="38" y="27" width="1" height="1" rx="0.26"/><rect x="4" y="28" width="1" height="1" rx="0.26"/><rect x="5" y="28" width="1" height="1" rx="0.26"/><rect x="6" y="28" width="1" height="1" rx="0.26"/><rect x="7" y="28" width="1" height="1" rx="0.26"/><rect x="8" y="28" width="1" height="1" rx="0.26"/><rect x="9" y="28" width="1" height="1" rx="0.26"/><rect x="10" y="28" width="1" height="1" rx="0.26"/><rect x="11" y="28" width="1" height="1" rx="0.26"/><rect x="13" y="28" width="1" height="1" rx="0.26"/><rect x="14" y="28" width="1" height="1" rx="0.26"/><rect x="16" y="28" width="1" height="1" rx="0.26"/><rect x="17" y="28" width="1" height="1" rx="0.26"/><rect x="19" y="28" width="1" height="1" rx="0.26"/><rect x="20" y="28" width="1" height="1" rx="0.26"/><rect x="21" y="28" width="1" height="1" rx="0.26"/><rect x="22" y="28" width="1" height="1" rx="0.26"/><rect x="23" y="28" width="1" height="1" rx="0.26"/><rect x="25" y="28" width="1" height="1" rx="0.26"/><rect x="27" y="28" width="1" height="1" rx="0.26"/><rect x="29" y="28" width="1" height="1" rx="0.26"/><rect x="30" y="28" width="1" height="1" rx="0.26"/><rect x="31" y="28" width="1" height="1" rx="0.26"/><rect x="34" y="28" width="1" height="1" rx="0.26"/><rect x="35" y="28" width="1" height="1" rx="0.26"/><rect x="36" y="28" width="1" height="1" rx="0.26"/><rect x="38" y="28" width="1" height="1" rx="0.26"/><rect x="40" y="28" width="1" height="1" rx="0.26"/><rect x="4" y="29" width="1" height="1" rx="0.26"/><rect x="6" y="29" width="1" height="1" rx="0.26"/><rect x="8" y="29" width="1" height="1" rx="0.26"/><rect x="9" y="29" width="1" height="1" rx="0.26"/><rect x="11" y="29" width="1" height="1" rx="0.26"/><rect x="12" y="29" width="1" height="1" rx="0.26"/><rect x="13" y="29" width="1" height="1" rx="0.26"/><rect x="14" y="29" width="1" height="1" rx="0.26"/><rect x="16" y="29" width="1" height="1" rx="0.26"/><rect x="19" y="29" width="1" height="1" rx="0.26"/><rect x="20" y="29" width="1" height="1" rx="0.26"/><rect x="22" y="29" width="1" height="1" rx="0.26"/><rect x="23" y="29" width="1" height="1" rx="0.26"/><rect x="28" y="29" width="1" height="1" rx="0.26"/><rect x="29" y="29" width="1" height="1" rx="0.26"/><rect x="32" y="29" width="1" height="1" rx="0.26"/><rect x="33" y="29" width="1" height="1" rx="0.26"/><rect x="34" y="29" width="1" height="1" rx="0.26"/><rect x="35" y="29" width="1" height="1" rx="0.26"/><rect x="36" y="29" width="1" height="1" rx="0.26"/><rect x="37" y="29" width="1" height="1" rx="0.26"/><rect x="38" y="29" width="1" height="1" rx="0.26"/><rect x="6" y="30" width="1" height="1" rx="0.26"/><rect x="7" y="30" width="1" height="1" rx="0.26"/><rect x="10" y="30" width="1" height="1" rx="0.26"/><rect x="12" y="30" width="1" height="1" rx="0.26"/><rect x="13" y="30" width="1" height="1" rx="0.26"/><rect x="14" y="30" width="1" height="1" rx="0.26"/><rect x="18" y="30" width="1" height="1" rx="0.26"/><rect x="19" y="30" width="1" height="1" rx="0.26"/><rect x="21" y="30" width="1" height="1" rx="0.26"/><rect x="22" y="30" width="1" height="1" rx="0.26"/><rect x="27" y="30" width="1" height="1" rx="0.26"/><rect x="28" y="30" width="1" height="1" rx="0.26"/><rect x="30" y="30" width="1" height="1" rx="0.26"/><rect x="32" y="30" width="1" height="1" rx="0.26"/><rect x="33" y="30" width="1" height="1" rx="0.26"/><rect x="6" y="31" width="1" height="1" rx="0.26"/><rect x="7" y="31" width="1" height="1" rx="0.26"/><rect x="8" y="31" width="1" height="1" rx="0.26"/><rect x="9" y="31" width="1" height="1" rx="0.26"/><rect x="11" y="31" width="1" height="1" rx="0.26"/><rect x="13" y="31" width="1" height="1" rx="0.26"/><rect x="15" y="31" width="1" height="1" rx="0.26"/><rect x="16" y="31" width="1" height="1" rx="0.26"/><rect x="18" y="31" width="1" height="1" rx="0.26"/><rect x="20" y="31" width="1" height="1" rx="0.26"/><rect x="21" y="31" width="1" height="1" rx="0.26"/><rect x="25" y="31" width="1" height="1" rx="0.26"/><rect x="26" y="31" width="1" height="1" rx="0.26"/><rect x="27" y="31" width="1" height="1" rx="0.26"/><rect x="30" y="31" width="1" height="1" rx="0.26"/><rect x="34" y="31" width="1" height="1" rx="0.26"/><rect x="37" y="31" width="1" height="1" rx="0.26"/><rect x="38" y="31" width="1" height="1" rx="0.26"/><rect x="40" y="31" width="1" height="1" rx="0.26"/><rect x="4" y="32" width="1" height="1" rx="0.26"/><rect x="5" y="32" width="1" height="1" rx="0.26"/><rect x="7" y="32" width="1" height="1" rx="0.26"/><rect x="8" y="32" width="1" height="1" rx="0.26"/><rect x="10" y="32" width="1" height="1" rx="0.26"/><rect x="11" y="32" width="1" height="1" rx="0.26"/><rect x="13" y="32" width="1" height="1" rx="0.26"/><rect x="17" y="32" width="1" height="1" rx="0.26"/><rect x="18" y="32" width="1" height="1" rx="0.26"/><rect x="19" y="32" width="1" height="1" rx="0.26"/><rect x="20" y="32" width="1" height="1" rx="0.26"/><rect x="21" y="32" width="1" height="1" rx="0.26"/><rect x="23" y="32" width="1" height="1" rx="0.26"/><rect x="25" y="32" width="1" height="1" rx="0.26"/><rect x="28" y="32" width="1" height="1" rx="0.26"/><rect x="31" y="32" width="1" height="1" rx="0.26"/><rect x="32" y="32" width="1" height="1" rx="0.26"/><rect x="33" y="32" width="1" height="1" rx="0.26"/><rect x="34" y="32" width="1" height="1" rx="0.26"/><rect x="35" y="32" width="1" height="1" rx="0.26"/><rect x="36" y="32" width="1" height="1" rx="0.26"/><rect x="39" y="32" width="1" height="1" rx="0.26"/><rect x="12" y="33" width="1" height="1" rx="0.26"/><rect x="13" y="33" width="1" height="1" rx="0.26"/><rect x="14" y="33" width="1" height="1" rx="0.26"/><rect x="16" y="33" width="1" height="1" rx="0.26"/><rect x="17" y="33" width="1" height="1" rx="0.26"/><rect x="18" y="33" width="1" height="1" rx="0.26"/><rect x="20" y="33" width="1" height="1" rx="0.26"/><rect x="22" y="33" width="1" height="1" rx="0.26"/><rect x="25" y="33" width="1" height="1" rx="0.26"/><rect x="26" y="33" width="1" height="1" rx="0.26"/><rect x="27" y="33" width="1" height="1" rx="0.26"/><rect x="30" y="33" width="1" height="1" rx="0.26"/><rect x="32" y="33" width="1" height="1" rx="0.26"/><rect x="36" y="33" width="1" height="1" rx="0.26"/><rect x="37" y="33" width="1" height="1" rx="0.26"/><rect x="39" y="33" width="1" height="1" rx="0.26"/><rect x="12" y="34" width="1" height="1" rx="0.26"/><rect x="13" y="34" width="1" height="1" rx="0.26"/><rect x="14" y="34" width="1" height="1" rx="0.26"/><rect x="15" y="34" width="1" height="1" rx="0.26"/><rect x="16" y="34" width="1" height="1" rx="0.26"/><rect x="17" y="34" width="1" height="1" rx="0.26"/><rect x="20" y="34" width="1" height="1" rx="0.26"/><rect x="23" y="34" width="1" height="1" rx="0.26"/><rect x="27" y="34" width="1" height="1" rx="0.26"/><rect x="28" y="34" width="1" height="1" rx="0.26"/><rect x="30" y="34" width="1" height="1" rx="0.26"/><rect x="32" y="34" width="1" height="1" rx="0.26"/><rect x="34" y="34" width="1" height="1" rx="0.26"/><rect x="36" y="34" width="1" height="1" rx="0.26"/><rect x="37" y="34" width="1" height="1" rx="0.26"/><rect x="38" y="34" width="1" height="1" rx="0.26"/><rect x="12" y="35" width="1" height="1" rx="0.26"/><rect x="13" y="35" width="1" height="1" rx="0.26"/><rect x="17" y="35" width="1" height="1" rx="0.26"/><rect x="20" y="35" width="1" height="1" rx="0.26"/><rect x="21" y="35" width="1" height="1" rx="0.26"/><rect x="22" y="35" width="1" height="1" rx="0.26"/><rect x="23" y="35" width="1" height="1" rx="0.26"/><rect x="25" y="35" width="1" height="1" rx="0.26"/><rect x="27" y="35" width="1" height="1" rx="0.26"/><rect x="28" y="35" width="1" height="1" rx="0.26"/><rect x="30" y="35" width="1" height="1" rx="0.26"/><rect x="32" y="35" width="1" height="1" rx="0.26"/><rect x="36" y="35" width="1" height="1" rx="0.26"/><rect x="38" y="35" width="1" height="1" rx="0.26"/><rect x="12" y="36" width="1" height="1" rx="0.26"/><rect x="16" y="36" width="1" height="1" rx="0.26"/><rect x="17" y="36" width="1" height="1" rx="0.26"/><rect x="18" y="36" width="1" height="1" rx="0.26"/><rect x="22" y="36" width="1" height="1" rx="0.26"/><rect x="23" y="36" width="1" height="1" rx="0.26"/><rect x="24" y="36" width="1" height="1" rx="0.26"/><rect x="26" y="36" width="1" height="1" rx="0.26"/><rect x="27" y="36" width="1" height="1" rx="0.26"/><rect x="28" y="36" width="1" height="1" rx="0.26"/><rect x="30" y="36" width="1" height="1" rx="0.26"/><rect x="32" y="36" width="1" height="1" rx="0.26"/><rect x="33" y="36" width="1" height="1" rx="0.26"/><rect x="34" y="36" width="1" height="1" rx="0.26"/><rect x="35" y="36" width="1" height="1" rx="0.26"/><rect x="36" y="36" width="1" height="1" rx="0.26"/><rect x="37" y="36" width="1" height="1" rx="0.26"/><rect x="38" y="36" width="1" height="1" rx="0.26"/><rect x="39" y="36" width="1" height="1" rx="0.26"/><rect x="15" y="37" width="1" height="1" rx="0.26"/><rect x="17" y="37" width="1" height="1" rx="0.26"/><rect x="19" y="37" width="1" height="1" rx="0.26"/><rect x="20" y="37" width="1" height="1" rx="0.26"/><rect x="21" y="37" width="1" height="1" rx="0.26"/><rect x="22" y="37" width="1" height="1" rx="0.26"/><rect x="25" y="37" width="1" height="1" rx="0.26"/><rect x="30" y="37" width="1" height="1" rx="0.26"/><rect x="31" y="37" width="1" height="1" rx="0.26"/><rect x="32" y="37" width="1" height="1" rx="0.26"/><rect x="34" y="37" width="1" height="1" rx="0.26"/><rect x="13" y="38" width="1" height="1" rx="0.26"/><rect x="17" y="38" width="1" height="1" rx="0.26"/><rect x="18" y="38" width="1" height="1" rx="0.26"/><rect x="19" y="38" width="1" height="1" rx="0.26"/><rect x="21" y="38" width="1" height="1" rx="0.26"/><rect x="23" y="38" width="1" height="1" rx="0.26"/><rect x="24" y="38" width="1" height="1" rx="0.26"/><rect x="34" y="38" width="1" height="1" rx="0.26"/><rect x="35" y="38" width="1" height="1" rx="0.26"/><rect x="37" y="38" width="1" height="1" rx="0.26"/><rect x="39" y="38" width="1" height="1" rx="0.26"/><rect x="13" y="39" width="1" height="1" rx="0.26"/><rect x="15" y="39" width="1" height="1" rx="0.26"/><rect x="17" y="39" width="1" height="1" rx="0.26"/><rect x="18" y="39" width="1" height="1" rx="0.26"/><rect x="19" y="39" width="1" height="1" rx="0.26"/><rect x="20" y="39" width="1" height="1" rx="0.26"/><rect x="22" y="39" width="1" height="1" rx="0.26"/><rect x="23" y="39" width="1" height="1" rx="0.26"/><rect x="26" y="39" width="1" height="1" rx="0.26"/><rect x="28" y="39" width="1" height="1" rx="0.26"/><rect x="30" y="39" width="1" height="1" rx="0.26"/><rect x="31" y="39" width="1" height="1" rx="0.26"/><rect x="34" y="39" width="1" height="1" rx="0.26"/><rect x="35" y="39" width="1" height="1" rx="0.26"/><rect x="38" y="39" width="1" height="1" rx="0.26"/><rect x="39" y="39" width="1" height="1" rx="0.26"/><rect x="19" y="40" width="1" height="1" rx="0.26"/><rect x="23" y="40" width="1" height="1" rx="0.26"/><rect x="25" y="40" width="1" height="1" rx="0.26"/><rect x="26" y="40" width="1" height="1" rx="0.26"/><rect x="27" y="40" width="1" height="1" rx="0.26"/><rect x="28" y="40" width="1" height="1" rx="0.26"/><rect x="35" y="40" width="1" height="1" rx="0.26"/><rect x="36" y="40" width="1" height="1" rx="0.26"/><rect x="38" y="40" width="1" height="1" rx="0.26"/><rect x="39" y="40" width="1" height="1" rx="0.26"/><rect x="40" y="40" width="1" height="1" rx="0.26"/></g><g class="qe"><rect class="eo" x="4.5" y="4.5" width="6" height="6" rx="1.9"/><rect class="ei" x="6" y="6" width="3" height="3" rx="1"/><rect class="eo" x="34.5" y="4.5" width="6" height="6" rx="1.9"/><rect class="ei" x="36" y="6" width="3" height="3" rx="1"/><rect class="eo" x="4.5" y="34.5" width="6" height="6" rx="1.9"/><rect class="ei" x="6" y="36" width="3" height="3" rx="1"/></g></svg>
+    </div>
+    <div class="qr-copy">
+      <h2>Follow along on your own device</h2>
+      <p>Scan with a phone camera to open this programme — useful if the text on the screen
+      is small, or if you would rather read from your own device.</p>
+      <a class="qr-url" href="https://empyrien.com/feast/kalimat/">empyrien.com/feast/kalimat/</a>
+    </div>
+  </div>
+
+  <p class="prose">Kalimát means <em>Words</em>. These nine passages follow the Word from its
+  origin in the mouth of God to the way it is spoken between us — as fire or as light, as
+  springtime or as poison, and finally as a lamp of unity.</p>
+
+  <p class="section-label">Opening prayer</p>
+
+  <article class="reading" id="p-open" data-key="p-open" data-label="Opening prayer">
+    <div class="reading-head">
+      <div class="reading-num" aria-hidden="true">✦</div>
+      <div class="reading-meta">
+        <span class="reading-author">Bahá’u’lláh</span>
+        <span class="reading-source">Bahá’í Prayers</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>Blessed is the spot, and the house, and the place, and the city, and the heart, and
+        the mountain, and the refuge, and the cave, and the valley, and the land, and the sea,
+        and the island, and the meadow where mention of God hath been made, and His praise
+        glorified.</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/prayers/bahai-prayers/1#521936016" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-p-open">Reader</label><select id="a-p-open"></select></span>
+    </div>
+  </article>
+
+  <p class="section-label">Nine readings on the Word</p>
+
+  <!-- 1 -->
+  <article class="reading" id="r1" data-key="r1" data-label="Reading 1 of 9">
+    <div class="reading-head">
+      <div class="reading-num">1</div>
+      <div class="reading-meta">
+        <span class="reading-author">Bahá’u’lláh</span>
+        <span class="reading-source">The Hidden Words — Kalimát-i-Maknúnih, preamble</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>This is that which hath descended from the realm of glory, uttered by the tongue of
+        power and might, and revealed unto the Prophets of old. We have taken the inner essence
+        thereof and clothed it in the garment of brevity, as a token of grace unto the
+        righteous, that they may stand faithful unto the Covenant of God, may fulfill in their
+        lives His trust, and in the realm of spirit obtain the gem of divine virtue.</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/bahaullah/hidden-words/2#642922139" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-r1">Reader</label><select id="a-r1"></select></span>
+    </div>
+  </article>
+
+  <!-- 2 -->
+  <article class="reading" id="r2" data-key="r2" data-label="Reading 2 of 9">
+    <div class="reading-head">
+      <div class="reading-num">2</div>
+      <div class="reading-meta">
+        <span class="reading-author">Bahá’u’lláh</span>
+        <span class="reading-source">Gleanings from the Writings of Bahá’u’lláh, LXXIV</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>Every word that proceedeth out of the mouth of God is endowed with such potency as
+        can instill new life into every human frame, if ye be of them that comprehend this
+        truth. All the wondrous works ye behold in this world have been manifested through the
+        operation of His supreme and most exalted Will, His wondrous and inflexible Purpose.
+        Through the mere revelation of the word “Fashioner,” issuing forth from His lips and
+        proclaiming His attribute to mankind, such power is released as can generate, through
+        successive ages, all the manifold arts which the hands of man can produce. This, verily,
+        is a certain truth. No sooner is this resplendent word uttered, than its animating
+        energies, stirring within all created things, give birth to the means and instruments
+        whereby such arts can be produced and perfected. All the wondrous achievements ye now
+        witness are the direct consequences of the revelation of this Name. In the days to come,
+        ye will, verily, behold things of which ye have never heard before. Thus hath it been
+        decreed in the Tablets of God, and none can comprehend it except them whose sight is
+        sharp. In like manner, the moment the word expressing My attribute “The Omniscient”
+        issueth forth from My mouth, every created thing will, according to its capacity and
+        limitations, be invested with the power to unfold the knowledge of the most marvelous
+        sciences, and will be empowered to manifest them in the course of time at the bidding of
+        Him Who is the Almighty, the All-Knowing. Know thou of a certainty that the revelation
+        of every other Name is accompanied by a similar manifestation of Divine power. Every
+        single letter proceeding out of the mouth of God is indeed a mother letter, and every
+        word uttered by Him Who is the Wellspring of Divine Revelation is a mother word, and His
+        Tablet a Mother Tablet. Well is it with them that apprehend this truth.</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/bahaullah/gleanings-writings-bahaullah/4#043743455" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-r2">Reader</label><select id="a-r2"></select></span>
+    </div>
+  </article>
+
+  <!-- 3 -->
+  <article class="reading" id="r3" data-key="r3" data-label="Reading 3 of 9">
+    <div class="reading-head">
+      <div class="reading-num">3</div>
+      <div class="reading-meta">
+        <span class="reading-author">Bahá’u’lláh</span>
+        <span class="reading-source">Lawḥ-i-Maqṣúd — Tablets of Bahá’u’lláh</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>O friend of mine! The Word of God is the king of words and its pervasive influence is
+        incalculable. It hath ever dominated and will continue to dominate the realm of being.
+        The Great Being saith: The Word is the master key for the whole world, inasmuch as
+        through its potency the doors of the hearts of men, which in reality are the doors of
+        heaven, are unlocked. No sooner had but a glimmer of its effulgent splendor shone forth
+        upon the mirror of love than the blessed word “I am the Best-Beloved” was reflected
+        therein. It is an ocean inexhaustible in riches, comprehending all things. Every thing
+        which can be perceived is but an emanation therefrom. High, immeasurably high is this
+        sublime station, in whose shadow moveth the essence of loftiness and splendor, wrapt in
+        praise and adoration.</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/bahaullah/tablets-bahaullah/5#242369257" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-r3">Reader</label><select id="a-r3"></select></span>
+    </div>
+  </article>
+
+  <!-- 4 -->
+  <article class="reading" id="r4" data-key="r4" data-label="Reading 4 of 9">
+    <div class="reading-head">
+      <div class="reading-num">4</div>
+      <div class="reading-meta">
+        <span class="reading-author">Bahá’u’lláh</span>
+        <span class="reading-source">Kalimát-i-Firdawsíyyih (Words of Paradise) — Tablets of Bahá’u’lláh</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>Glorified be God! Man’s treasure is his utterance, yet this Wronged One hath withheld
+        His Tongue, for the disbelievers are lying in ambush; however, protection is afforded by
+        God, the Lord of all worlds. Verily, in Him have We placed Our trust and unto Him have We
+        committed all affairs. All-Sufficient is He for Us and for all created things. He is the
+        One by Whose leave, and through the potency of Whose command, the Daystar of sovereign
+        might hath shone resplendent above the horizon of the world. Well is it with him who
+        perceiveth and recognizeth the Truth and woe betide the froward and the faithless.</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/bahaullah/tablets-bahaullah/3#730456996" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-r4">Reader</label><select id="a-r4"></select></span>
+    </div>
+  </article>
+
+  <!-- 5 — bilingual -->
+  <article class="reading" id="r5" data-key="r5" data-label="Reading 5 of 9 — in Persian">
+    <div class="reading-head">
+      <div class="reading-num">5</div>
+      <div class="reading-meta">
+        <span class="reading-author">Bahá’u’lláh</span>
+        <span class="reading-source">Lawḥ-i-Maqṣúd — the Persian original, with the English beneath</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p class="bl-note">Read the Persian aloud if you are able; the English below each line
+        is Shoghi Effendi’s rendering, set quietly so it does not compete with the original.
+        The lines are matched sentence by sentence, not word for word.</p>
+        <div class="bilingual">
+          <div class="bl-line">
+            <p class="bl-fa" lang="fa" dir="rtl">از برای هر کلمه‌ئی روحی است لذا باید متکلّم و مبیّن ملاحظه نمایند و بوقت و مقام کلمه القا فرمایند چه که از برای هر کلمه اثری موجود و مشهود</p>
+            <p class="bl-en">Every word is endowed with a spirit, therefore the speaker or expounder should carefully deliver his words at the appropriate time and place, for the impression which each word maketh is clearly evident and perceptible.</p>
+          </div>
+          <div class="bl-line">
+            <p class="bl-fa" lang="fa" dir="rtl">حضرت موجود میفرماید یک کلمه بمثابه نار است و اخری بمثابه نور و اثر هر دو در عالم ظاهر</p>
+            <p class="bl-en">The Great Being saith: One word may be likened unto fire, another unto light, and the influence which both exert is manifest in the world.</p>
+          </div>
+          <div class="bl-line">
+            <p class="bl-fa" lang="fa" dir="rtl">لذا باید حکیم دانا در اوّل بکلمه‌ئی که خاصیّت شیر در او باشد تکلّم نماید تا اطفال روزگار تربیت شوند و بغایت قصوای وجود انسانی که مقام ادراک و بزرگی است فائز گردند</p>
+            <p class="bl-en">Therefore an enlightened man of wisdom should primarily speak with words as mild as milk, that the children of men may be nurtured and edified thereby and may attain the ultimate goal of human existence which is the station of true understanding and nobility.</p>
+          </div>
+          <div class="bl-line">
+            <p class="bl-fa" lang="fa" dir="rtl">و هم‌چنین میفرماید یک کلمه بمثابه ربیع است و نهالهای بستان دانش از او سرسبز و خرّم و کلمۀ دیگر مانند سموم انتهی</p>
+            <p class="bl-en">And likewise He saith: One word is like unto springtime causing the tender saplings of the rose-garden of knowledge to become verdant and flourishing, while another word is even as a deadly poison.</p>
+          </div>
+          <div class="bl-line">
+            <p class="bl-fa" lang="fa" dir="rtl">حکیم دانا باید بکمال مدارا تکلّم فرماید تا از حلاوت بیان کلّ به ما ینبغی للانسان فائز شوند</p>
+            <p class="bl-en">It behooveth a prudent man of wisdom to speak with utmost leniency and forbearance so that the sweetness of his words may induce everyone to attain that which befitteth man’s station.</p>
+          </div>
+        </div>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/fa/library/authoritative-texts/bahaullah/tablets-bahaullah/12#170185700" target="_blank" rel="noopener">Persian at library.bahai.org ↗</a>
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/bahaullah/tablets-bahaullah/5#430671214" target="_blank" rel="noopener">English ↗</a>
+      <span class="assign"><label for="a-r5">Reader</label><select id="a-r5"></select></span>
+    </div>
+  </article>
+
+  <!-- 6 -->
+  <article class="reading" id="r6" data-key="r6" data-label="Reading 6 of 9">
+    <div class="reading-head">
+      <div class="reading-num">6</div>
+      <div class="reading-meta">
+        <span class="reading-author">Bahá’u’lláh</span>
+        <span class="reading-source">Lawḥ-i-Maqṣúd — Tablets of Bahá’u’lláh</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>Teach thou the Cause of God with an utterance which will cause the bushes to be
+        enkindled, and the call “Verily, there is no God but Me, the Almighty, the
+        Unconstrained” to be raised therefrom. Say: Human utterance is an essence which
+        aspireth to exert its influence and needeth moderation. As to its influence, this is
+        conditional upon refinement which in turn is dependent upon hearts which are detached
+        and pure. As to its moderation, this hath to be combined with tact and wisdom as
+        prescribed in the Holy Scriptures and Tablets. Meditate upon that which hath streamed
+        forth from the heaven of the Will of thy Lord, He Who is the Source of all grace, that
+        thou mayest grasp the intended meaning which is enshrined in the sacred depths of the
+        Holy Writings.</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/bahaullah/tablets-bahaullah/5#969741149" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-r6">Reader</label><select id="a-r6"></select></span>
+    </div>
+  </article>
+
+  <!-- 7 -->
+  <article class="reading" id="r7" data-key="r7" data-label="Reading 7 of 9">
+    <div class="reading-head">
+      <div class="reading-num">7</div>
+      <div class="reading-meta">
+        <span class="reading-author">Bahá’u’lláh</span>
+        <span class="reading-source">Gleanings from the Writings of Bahá’u’lláh, CXXXII</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>Consort with all men, O people of Bahá, in a spirit of friendliness and fellowship.
+        If ye be aware of a certain truth, if ye possess a jewel, of which others are deprived,
+        share it with them in a language of utmost kindliness and goodwill. If it be accepted,
+        if it fulfill its purpose, your object is attained. If anyone should refuse it, leave
+        him unto himself, and beseech God to guide him. Beware lest ye deal unkindly with him.
+        A kindly tongue is the lodestone of the hearts of men. It is the bread of the spirit, it
+        clotheth the words with meaning, it is the fountain of the light of wisdom and
+        understanding.…</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/bahaullah/gleanings-writings-bahaullah/7#722589456" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-r7">Reader</label><select id="a-r7"></select></span>
+    </div>
+  </article>
+
+  <!-- 8 -->
+  <article class="reading" id="r8" data-key="r8" data-label="Reading 8 of 9">
+    <div class="reading-head">
+      <div class="reading-num">8</div>
+      <div class="reading-meta">
+        <span class="reading-author">‘Abdu’l-Bahá</span>
+        <span class="reading-source">Selections from the Writings of ‘Abdu’l-Bahá, §15 — to an enquirer</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>O honored lady! In accordance with the divine teachings in this glorious dispensation
+        we should not belittle anyone and call him ignorant, saying: “You know not, but I know.”
+        Rather, we should look upon others with respect, and when attempting to explain and
+        demonstrate, we should speak as if we are investigating the truth, saying: “Here these
+        things are before us. Let us investigate to determine where and in what form the truth
+        can be found.” The teacher should not consider himself as learned and others ignorant.
+        Such a thought breedeth pride, and pride is not conducive to influence. The teacher
+        should not see in himself any superiority; he should speak with the utmost kindliness,
+        lowliness and humility, for such speech exerteth influence and educateth the souls.</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/abdul-baha/selections-writings-abdul-baha/3#580250397" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-r8">Reader</label><select id="a-r8"></select></span>
+    </div>
+  </article>
+
+  <!-- 9 -->
+  <article class="reading" id="r9" data-key="r9" data-label="Reading 9 of 9">
+    <div class="reading-head">
+      <div class="reading-num">9</div>
+      <div class="reading-meta">
+        <span class="reading-author">Bahá’u’lláh</span>
+        <span class="reading-source">Gleanings from the Writings of Bahá’u’lláh, CXXXII</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>The utterance of God is a lamp, whose light is these words: Ye are the fruits of one
+        tree, and the leaves of one branch. Deal ye one with another with the utmost love and
+        harmony, with friendliness and fellowship. He Who is the Daystar of Truth beareth Me
+        witness! So powerful is the light of unity that it can illuminate the whole earth. The
+        one true God, He Who knoweth all things, Himself testifieth to the truth of these words.</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/bahaullah/gleanings-writings-bahaullah/7#487380847" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-r9">Reader</label><select id="a-r9"></select></span>
+    </div>
+  </article>
+
+  <p class="section-label">Closing prayer</p>
+
+  <article class="reading" id="p-close" data-key="p-close" data-label="Closing prayer">
+    <div class="reading-head">
+      <div class="reading-num" aria-hidden="true">✦</div>
+      <div class="reading-meta">
+        <span class="reading-author">‘Abdu’l-Bahá</span>
+        <span class="reading-source">Bahá’í Prayers</span>
+      </div>
+      <button type="button" class="tool present-here" aria-label="Start the slideshow here">
+        <span class="glyph" aria-hidden="true">▶</span>
+      </button>
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        <p>O God, my God! Aid Thou Thy trusted servants to have loving and tender hearts. Help
+        them to spread, amongst all the nations of the earth, the light of guidance that cometh
+        from the Company on high. Verily, Thou art the Strong, the Powerful, the Mighty, the
+        All-Subduing, the Ever-Giving. Verily, Thou art the Generous, the Gentle, the Tender,
+        the Most Bountiful.</p>
+      </div>
+      <div class="reading-gutter"></div>
+    </div>
+    <div class="reading-foot">
+      <a class="source-link" href="https://www.bahai.org/library/authoritative-texts/prayers/bahai-prayers/3#876633233" target="_blank" rel="noopener">Read at library.bahai.org ↗</a>
+      <span class="assign"><label for="a-p-close">Reader</label><select id="a-p-close"></select></span>
+    </div>
+  </article>
+
+  <p class="ornament" aria-hidden="true">✦</p>
+</main>
+
+<!-- ------------------------------------------------------ slideshow -->
+<div class="stage" id="stage" hidden role="dialog" aria-modal="true" aria-label="Slideshow">
+  <button type="button" class="stage-tap prev" aria-label="Previous reading" tabindex="-1"></button>
+  <button type="button" class="stage-tap next" aria-label="Next reading" tabindex="-1"></button>
+
+  <div class="stage-top">
+    <span class="stage-count"></span>
+    <span>
+      <button type="button" class="tool" id="stage-pron-toggle" aria-pressed="false">
+        <span class="glyph" aria-hidden="true">◉</span><span class="text">Pronunciation</span>
+      </button>
+      <button type="button" class="tool" id="stage-close">Close</button>
+    </span>
+  </div>
+
+  <div class="stage-body">
+    <p class="stage-reader"></p>
+    <p class="stage-source"></p>
+    <div class="stage-text"></div>
+    <div class="stage-pron" hidden></div>
+  </div>
+
+  <div class="stage-foot">
+    <div class="stage-nav">
+      <button type="button" class="tool" id="stage-prev">← Back</button>
+    </div>
+    <div class="stage-dots"></div>
+    <div class="stage-nav">
+      <button type="button" class="tool tool-primary" id="stage-next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<footer class="page-foot">
+  <p class="ornament" aria-hidden="true">✦</p>
+  <p>Compiled for the Feast of Kalimát.<br>
+  All passages are quoted from the
+  <a href="https://www.bahai.org/library/" target="_blank" rel="noopener">Bahá’í Reference Library</a>;
+  each reading links to its source.</p>
+  <p style="margin-top:1rem"><a href="/feast/">All Feast programmes</a> · <a href="/">Empyrien</a></p>
+</footer>
+
+<script src="../glossary.js"></script>
+<script src="../feast.js"></script>
+</body>
+</html>
