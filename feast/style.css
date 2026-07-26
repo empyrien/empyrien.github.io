@@ -699,6 +699,8 @@ input[type="range"] { accent-color: var(--accent); }
 }
 :root[data-face="legible"] .qr-copy h2 { font-family: var(--legible); font-weight: 700; }
 .qr-copy p { font-size: calc(0.92rem * var(--scale)); color: var(--ink-soft); line-height: 1.6; }
+.qr-actions { margin-top: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
 .qr-url {
   display: inline-block;
   margin-top: 0.6rem;

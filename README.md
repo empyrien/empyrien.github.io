@@ -21,6 +21,37 @@ Static site — no framework, no build step.
   margin notes, the slideshow, and the generated ambient tone
 - `feast/glossary.js` — pronunciation entries, keyed by the exact word as it
   appears in the text
+- `feast/qr.js` — a small byte-mode QR encoder, so the code on the page can be
+  redrawn in the browser to carry the current reader assignments
+
+### Sharing reader assignments
+
+There is no server, so assignments travel in the link rather than being stored
+anywhere: `?f=` is the roster (names, `~`-separated, percent-encoded) and `?s=`
+is one base-36 character per reading in page order giving that reader's index,
+or `-` for unassigned. Opening such a link imports the list into that device's
+`localStorage` and then cleans the query string off the address bar.
+
+The QR code on the programme page is regenerated from that link whenever the
+assignments change, so scanning it hands over the programme *and* the list.
+Rosters too large to encode (past ~250 characters) fall back to the static
+plain-URL code and the Copy link button.
+
+`feast/qr.js` is generated, not hand-written:
+
+```
+pip install segno opencv-python-headless numpy
+python3 tools/gen-qr-js.py > feast/qr.js
+python3 tools/verify-qr.py
+```
+
+`gen-qr-js.py` emits the spec tables straight out of `segno` so none of them
+are transcribed by hand. `verify-qr.py` renders the encoder's output and
+decodes it with OpenCV, checking the text survives the round trip and that the
+symbol is never larger than the one segno picks for the same input. Note that
+exact matrix equality with segno is *not* the test: in byte mode segno always
+appends one extra `0x00` pad codeword, so the two produce different but equally
+valid symbols.
 
 ### Adding a programme
 

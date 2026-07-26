@@ -182,6 +182,54 @@
 
   function readingKey(el) { return el.getAttribute("data-key") || el.id; }
 
+  /* --- sharing ------------------------------------------------------ *
+   * Assignments live on the device that made them, so to get them onto
+   * everyone else's phone they travel in the link: the roster as names,
+   * and one base-36 character per reading naming who has it.           */
+
+  function shareQuery() {
+    if (!readers.length) return "";
+    var seats = readings.map(function (el) {
+      var i = readers.indexOf(assignedTo(el));
+      return (i < 0 || i > 35) ? "-" : i.toString(36);
+    }).join("");
+    return "?f=" + readers.map(encodeURIComponent).join("~") + "&s=" + seats;
+  }
+
+  function shareUrl() {
+    return location.origin + location.pathname + shareQuery();
+  }
+
+  /* Read a shared link, if we arrived by one, before anything is drawn. */
+  (function importFromLink() {
+    var params = new URLSearchParams(location.search);
+    var folk = params.get("f");
+    if (!folk) return;
+
+    var incoming = folk.split("~").map(function (n) {
+      try { return decodeURIComponent(n).trim(); } catch (e) { return n.trim(); }
+    }).filter(Boolean);
+    if (!incoming.length) return;
+
+    readers = incoming;
+    assignments = {};
+    var seats = params.get("s") || "";
+    readings.forEach(function (el, i) {
+      var ch = seats.charAt(i);
+      var idx = parseInt(ch, 36);
+      if (ch && ch !== "-" && !isNaN(idx) && readers[idx]) {
+        assignments[readingKey(el)] = readers[idx];
+      }
+    });
+    save(READERS_KEY, readers);
+    save(ASSIGN_KEY, assignments);
+
+    /* Tidy the address bar; the list now lives on this device. */
+    if (window.history && history.replaceState) {
+      history.replaceState(null, "", location.pathname);
+    }
+  })();
+
   function assignedTo(el) {
     var name = assignments[readingKey(el)];
     return name && readers.indexOf(name) >= 0 ? name : "";
@@ -190,6 +238,85 @@
   function persistReaders() {
     save(READERS_KEY, readers);
     save(ASSIGN_KEY, assignments);
+    refreshShare();
+  }
+
+  /* --- the QR code, redrawn as the assignments change ----------------- */
+
+  var qrFrame = document.querySelector(".qr-frame");
+  var qrStatic = qrFrame ? qrFrame.innerHTML : "";
+
+  function qrSvg(matrix) {
+    var n = matrix.length, b = 4, size = n + 2 * b;
+    var finders = [[0, 0], [0, n - 7], [n - 7, 0]];
+    function inFinder(r, c) {
+      return finders.some(function (f) {
+        return r >= f[0] && r < f[0] + 7 && c >= f[1] && c < f[1] + 7;
+      });
+    }
+    var dots = "";
+    for (var r = 0; r < n; r++) {
+      for (var c = 0; c < n; c++) {
+        if (matrix[r][c] && !inFinder(r, c)) {
+          dots += '<rect x="' + (c + b) + '" y="' + (r + b) + '" width="1" height="1" rx="0.26"/>';
+        }
+      }
+    }
+    var eyes = "";
+    finders.forEach(function (f) {
+      var x = f[1] + b, y = f[0] + b;
+      eyes += '<rect class="eo" x="' + (x + 0.5) + '" y="' + (y + 0.5) + '" width="6" height="6" rx="1.9"/>';
+      eyes += '<rect class="ei" x="' + (x + 2) + '" y="' + (y + 2) + '" width="3" height="3" rx="1"/>';
+    });
+    return '<svg class="qr" viewBox="0 0 ' + size + ' ' + size + '" ' +
+      'xmlns="http://www.w3.org/2000/svg" role="img" ' +
+      'aria-label="QR code linking to this programme">' +
+      '<rect class="qbg" x="0" y="0" width="' + size + '" height="' + size + '" rx="3"/>' +
+      '<g class="qm">' + dots + '</g><g class="qe">' + eyes + '</g></svg>';
+  }
+
+  var qrTitle = document.getElementById("qr-title");
+  var qrBlurb = document.getElementById("qr-blurb");
+  var qrLink = document.getElementById("qr-url");
+
+  function refreshShare() {
+    var url = shareUrl();
+    var assigned = readings.filter(function (el) { return assignedTo(el); }).length;
+    var shared = readers.length > 0;
+
+    if (qrLink) {
+      qrLink.href = url;
+      qrLink.textContent = url.replace(/^https?:\/\//, "").replace(/\?.*$/, "") +
+        (shared ? " + readers" : "");
+    }
+    if (qrTitle) {
+      qrTitle.textContent = shared
+        ? "Scan to get the programme and tonight’s readers"
+        : "Follow along on your own device";
+    }
+    if (qrBlurb) {
+      qrBlurb.textContent = shared
+        ? "This code now carries the reading list. Whoever scans it sees the same " +
+          "names beside the same readings — " + assigned + " of " + readings.length +
+          " assigned. Re-scan after you change anything."
+        : "Scan with a phone camera to open this programme — useful if the text on " +
+          "the screen is small, or if you would rather read from your own device.";
+    }
+
+    if (!qrFrame) return;
+    if (!shared) { qrFrame.innerHTML = qrStatic; return; }
+
+    var matrix = window.FeastQR && window.FeastQR.build(url);
+    if (matrix) {
+      qrFrame.innerHTML = qrSvg(matrix);
+    } else {
+      /* Too many names to fit in a code — fall back to the plain link. */
+      qrFrame.innerHTML = qrStatic;
+      if (qrBlurb) {
+        qrBlurb.textContent = "There are too many names to fit in a QR code. " +
+          "Use “Copy link” below to send the list instead.";
+      }
+    }
   }
 
   function renderRoster() {
@@ -317,8 +444,28 @@
     toast("Assignments cleared");
   });
 
+  /* Copy or send the link, for anyone not in the room to scan the screen. */
+  on("share-link", "click", function () {
+    var url = shareUrl();
+    var title = document.title;
+    if (navigator.share) {
+      navigator.share({ title: title, url: url }).catch(function () {});
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () {
+        toast(readers.length ? "Link copied, readers included" : "Link copied");
+      }, function () {
+        window.prompt("Copy this link", url);
+      });
+      return;
+    }
+    window.prompt("Copy this link", url);
+  });
+
   renderRoster();
   renderSelects();
+  refreshShare();
 
   /* ---------------------------------------------------------- pronunciation */
 
