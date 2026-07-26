@@ -590,6 +590,15 @@ input[type="range"] { accent-color: var(--accent); }
   text-decoration-style: solid;
   text-decoration-color: var(--accent);
   color: var(--accent);
+  /* a soft mark, so the word is still findable once the bubble is up */
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+:root[data-contrast="high"] .pron[aria-expanded="true"] {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 /* The note itself — lives in the margin, never over the words. */
@@ -626,18 +635,55 @@ input[type="range"] { accent-color: var(--accent); }
   line-height: 1.5;
 }
 
-/* Below the two-column breakpoint the note sits under the reading text. */
-@media (max-width: 59.999rem) {
-  .reading-gutter .pron-note {
-    margin-top: 1rem;
-    margin-left: 1.15rem;
-    padding-top: 0.6rem;
-    border-top: 1px dashed var(--rule);
-    border-left: 2px solid var(--accent-soft);
-  }
+@keyframes note-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+
+/* The narrow-screen bubble: pinned low, clear of the line being read. */
+.pron-bubble {
+  position: fixed;
+  left: 0.7rem;
+  right: 0.7rem;
+  bottom: calc(0.7rem + env(safe-area-inset-bottom, 0px));
+  z-index: 320;
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 0.9rem 2.9rem 0.95rem 1.05rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--accent-soft);
+  border-radius: 16px;
+  box-shadow: 0 10px 34px var(--shadow-lift), 0 2px 6px var(--shadow);
+  animation: bubble-in 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+:root[data-contrast="high"] .pron-bubble { border-width: 2px; border-color: var(--ink); }
+.pron-bubble[hidden] { display: none; }
+
+/* Inside the bubble the note drops its margin rule — the bubble is the frame. */
+.pron-bubble .pron-note {
+  border-left: 0;
+  padding: 0;
+  animation: none;
 }
 
-@keyframes note-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+.pron-close {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  width: 2rem;
+  height: 2rem;
+  font: inherit;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--ink-faint);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.pron-close:hover { background: var(--bg-sunk); color: var(--ink); }
+
+@keyframes bubble-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
 
 /* Pronunciation rail in present mode — opt-in, tucked below the reading. */
 .stage-pron {
@@ -985,7 +1031,8 @@ body.presenting { overflow: hidden; }
 /* ---------------------------------------------------------- print */
 
 @media print {
-  .toolbar, .panel, .qr-panel, .stage, .toast, .skip-link, .assign, .ornament { display: none !important; }
+  .toolbar, .panel, .qr-panel, .stage, .toast, .skip-link, .assign, .ornament,
+  .pron-bubble { display: none !important; }
   body { background: #fff; color: #000; }
   .reading {
     border: 0;

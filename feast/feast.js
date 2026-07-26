@@ -32,8 +32,15 @@
 
   /* ---------------------------------------------------------- preferences */
 
-  var DEFAULTS = { theme: "", contrast: "normal", face: "serif", lead: "normal", scale: 1 };
+  /* Light by default rather than following the device: these pages are read
+     aloud in lit rooms and shown on televisions, where light reads better. A
+     reader who switches to dark keeps it. */
+  var DEFAULTS = { theme: "light", contrast: "normal", face: "serif", lead: "normal", scale: 1 };
   var prefs = Object.assign({}, DEFAULTS, load(PREFS_KEY, {}));
+
+  /* Earlier visits stored an empty theme meaning "follow the device"; treat
+     anything unrecognised as the default so everyone lands on the same page. */
+  if (prefs.theme !== "light" && prefs.theme !== "dark") prefs.theme = DEFAULTS.theme;
 
   var SCALES = [0.9, 1, 1.15, 1.35, 1.6, 1.9, 2.25];
 
@@ -534,33 +541,39 @@
     if (text) markTerms(text);
   });
 
-  /* Show the note in the margin, level with the word — never over the text. */
+  /* Wide screens get the note in the margin, level with the word. Narrow ones
+     have no margin, and putting it under the passage buried it below the fold,
+     so there it becomes a bubble pinned to the bottom of the screen: always in
+     view, and it neither reflows the text nor covers the line being read. */
+  var wideEnough = window.matchMedia("(min-width: 60rem)");
   var openNote = null;
+  var bubble = null;
 
-  function closeNote() {
-    if (!openNote) return;
-    openNote.button.setAttribute("aria-expanded", "false");
-    openNote.note.hidden = true;
-    openNote = null;
+  function makeBubble() {
+    if (bubble) return bubble;
+    bubble = document.createElement("div");
+    bubble.className = "pron-bubble";
+    bubble.setAttribute("role", "status");
+    bubble.hidden = true;
+
+    var body = document.createElement("div");
+    body.className = "pron-note";
+    bubble.appendChild(body);
+
+    var close = document.createElement("button");
+    close.type = "button";
+    close.className = "pron-close";
+    close.innerHTML = "&times;";
+    close.setAttribute("aria-label", "Close pronunciation");
+    close.addEventListener("click", closeNote);
+    bubble.appendChild(close);
+
+    document.body.appendChild(bubble);
+    return bubble;
   }
 
-  function showNote(btn) {
-    var card = btn.closest(".reading");
-    var gutter = card && card.querySelector(".reading-gutter");
-    if (!gutter) return;
-
-    if (openNote && openNote.button === btn) { closeNote(); return; }
-    closeNote();
-
-    var note = gutter.querySelector(".pron-note");
-    if (!note) {
-      note = document.createElement("div");
-      note.className = "pron-note";
-      note.setAttribute("role", "status");
-      gutter.appendChild(note);
-    }
+  function fillNote(note, btn) {
     note.textContent = "";
-
     var word = document.createElement("div");
     word.className = "word";
     word.textContent = btn.textContent;
@@ -575,25 +588,55 @@
       gloss.textContent = btn.dataset.gloss;
       note.appendChild(gloss);
     }
-    note.hidden = false;
+  }
 
-    /* On wide screens the note floats to the height of the word it explains. */
-    if (window.matchMedia("(min-width: 60rem)").matches) {
-      var top = btn.getBoundingClientRect().top - gutter.getBoundingClientRect().top;
-      var maxTop = Math.max(0, gutter.offsetHeight - note.offsetHeight);
-      note.style.top = Math.max(0, Math.min(top, maxTop)) + "px";
-    } else {
-      note.style.top = "";
+  function closeNote() {
+    if (!openNote) return;
+    openNote.button.setAttribute("aria-expanded", "false");
+    openNote.container.hidden = true;
+    openNote = null;
+  }
+
+  function showNote(btn) {
+    if (openNote && openNote.button === btn) { closeNote(); return; }
+    closeNote();
+
+    if (!wideEnough.matches) {
+      var box = makeBubble();
+      fillNote(box.querySelector(".pron-note"), btn);
+      box.hidden = false;
+      btn.setAttribute("aria-expanded", "true");
+      openNote = { button: btn, container: box };
+      return;
     }
 
+    var card = btn.closest(".reading");
+    var gutter = card && card.querySelector(".reading-gutter");
+    if (!gutter) return;
+
+    var note = gutter.querySelector(".pron-note");
+    if (!note) {
+      note = document.createElement("div");
+      note.className = "pron-note";
+      note.setAttribute("role", "status");
+      gutter.appendChild(note);
+    }
+    fillNote(note, btn);
+    note.hidden = false;
+
+    var top = btn.getBoundingClientRect().top - gutter.getBoundingClientRect().top;
+    var maxTop = Math.max(0, gutter.offsetHeight - note.offsetHeight);
+    note.style.top = Math.max(0, Math.min(top, maxTop)) + "px";
+
     btn.setAttribute("aria-expanded", "true");
-    openNote = { button: btn, note: note };
+    openNote = { button: btn, container: note };
   }
 
   document.addEventListener("click", function (e) {
     var btn = e.target.closest && e.target.closest(".pron");
     if (btn && !btn.closest(".stage")) { showNote(btn); return; }
-    if (!e.target.closest || !e.target.closest(".pron-note")) closeNote();
+    /* Tapping the bubble itself should not dismiss it; its ✕ handles that. */
+    if (!e.target.closest || !e.target.closest(".pron-note, .pron-bubble")) closeNote();
   });
 
   document.addEventListener("keydown", function (e) {
