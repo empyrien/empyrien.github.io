@@ -29,7 +29,22 @@
   };
 
   reveal(document.querySelectorAll('[data-reveal]'), 'is-in', { rootMargin: '0px 0px -6% 0px', threshold: 0.08 });
-  reveal(document.querySelectorAll('.conv'), 'is-in', { threshold: 0.45 });
+  reveal(document.querySelectorAll('.conv, .abjad'), 'is-in', { threshold: 0.45 });
+
+  /* ---------------------------------------------- filters (a reference list) */
+
+  document.querySelectorAll('.filters[data-target]').forEach((bar) => {
+    const list = document.getElementById(bar.dataset.target);
+    if (!list) return;
+    bar.hidden = false;
+    bar.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-f]');
+      if (!btn) return;
+      bar.querySelectorAll('button[data-f]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      const f = btn.dataset.f;
+      list.querySelectorAll('[data-c]').forEach((item) => { item.hidden = !(f === 'all' || item.dataset.c === f); });
+    });
+  });
 
   /* ---------------------------------------------- top bar over the hero */
 
@@ -113,7 +128,7 @@
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = canvas.clientWidth;
       h = canvas.clientHeight;
-      horizon = h * 0.55;
+      horizon = h * (parseFloat(canvas.dataset.horizon) || 0.55);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

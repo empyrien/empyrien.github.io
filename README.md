@@ -1,14 +1,59 @@
 # empyrien.com
 
-Static site — no framework, no build step.
+Static site — no framework, no build step. Pushing to `main` deploys (Vercel).
 
 ## Structure
 
-- `index.html` — landing
-- `vision/` — hub linking to section pages
-- `vision/{faith,prophecy,pattern,trilemma,numbers,suddenly}/` — sections
-- `vision/style.css` — shared stylesheet
-- `feast/` — Bahá'í Nineteen Day Feast programmes (see below)
+- `index.html` — landing: the dawn hero, then one arched door per area
+- `journey/` — the guided introduction; the story is the `N` object in the page
+- `vision/` — contents page; chapters in `vision/{faith,prophecy,pattern,trilemma,numbers,suddenly}/`
+- `letters/` — Twenty-Seven Letters, the Vision's interlude
+- `feast/` — Feast programmes. **Not linked from the rest of the site** (reached
+  by URL or QR code) and styled on its own; see below
+- `404.html`, `robots.txt`, `sitemap.xml` (the sitemap leaves out `/feast`)
+- `assets/` — the shared design system, share cards (`assets/og/`)
+- `tools/` — generators for the star geometry, icons, share cards and QR codes
+
+## Design system
+
+Every page outside `/feast` uses `assets/site.css` and `assets/site.js`.
+
+- **Type:** Cormorant Garamond (display), Literata (text), Source Code Pro
+  (labels). All three contain every transliteration glyph the site uses
+  (á í ú ḍ ḥ ṣ ẓ ʻ ʼ). Many fonts silently lack ḥ and ṣ (Newsreader, JetBrains
+  Mono, DM Mono…), so check coverage before swapping any of them.
+- **Colour:** tokens at the top of `site.css`. Night, parchment ink, and gold
+  as the only light; starlight and ember are the only other accents.
+  `--ink-4` is for decoration only — it fails contrast as text.
+- **The star:** every nine-pointed star (brand mark, favicon, astrolabe,
+  ornaments) is drawn from `tools/star.py`.
+- **Articles** are a grid: text runs in a reading column; add `.wide` to let a
+  figure, the arches or the timeline step out into a broader one.
+- **No script needed:** every page reads with JavaScript off. `[data-reveal]`
+  content is hidden only after `site.js` has run (see the inline script in
+  each `<head>`), and reduced motion switches every animation off.
+
+### Adding an area
+
+Copy one `<a class="doorway">` in `index.html` and draw its window: an SVG
+clipped to the arch path, 200×280. The row of doors re-centres for any count.
+Then add the area to the top bar, the mobile menu and the footer on every page.
+
+### Adding a Vision chapter
+
+Copy a chapter page and keep its parts: the numeral head, the article, and the
+next-chapter door at the end. Then update the contents list in `vision/`, the
+previous chapter's next door, `sitemap.xml`, and give it a share card.
+
+### Share cards and icons
+
+```
+node tools/og/render.mjs [name …]   # assets/og/*.png from tools/og/card.html
+python3 tools/make-icons.py         # favicon.ico, favicon-32.png, apple-touch-icon.png
+```
+
+The card renderer needs Node 22+ and Google Chrome; add new pages to `CARDS`
+in `render.mjs`. The icon script needs Pillow. `favicon.svg` is edited by hand.
 
 ## Feast programmes
 
@@ -82,9 +127,8 @@ Each programme has a single `<p class="dateline">` in the masthead, marked with
 a comment. Feast dates move a little year to year — check the current list at
 <https://www.bahai.org/action/devotional-life/calendar>.
 
-## Deploying to Vercel
+## Deploying
 
-1. Go to [vercel.com/new](https://vercel.com/new) and import this GitHub repo (`empyrien/empyrien.github.io`).
-2. Framework preset: **Other**. Leave Build Command and Output Directory empty (static site served from repo root). `vercel.json` is already configured.
-3. Deploy, then add `empyrien.com` under Project → Settings → Domains and follow Vercel's DNS instructions at your registrar (Hover).
-4. Once the domain is verified on Vercel, remove the GitHub Pages custom domain (repo Settings → Pages) to avoid conflicts. The `CNAME` file only affects GitHub Pages and is ignored by Vercel.
+Push to `main`; Vercel deploys in a few seconds. The Vercel team blocks
+deployments whose commit author isn't a team member, so set this repo's
+`git config user.email` to the Empyrien address before committing.

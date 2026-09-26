@@ -2,139 +2,58 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>The Journey — Empyrien</title>
 <meta name="description" content="A ten-minute journey through a story most people have never heard — one idea at a time.">
+<link rel="canonical" href="https://www.empyrien.com/journey/">
+<meta name="theme-color" content="#08090e">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Empyrien">
+<meta property="og:title" content="This is a story most people have never heard.">
+<meta property="og:description" content="A ten-minute journey through a story most people have never heard — one idea at a time.">
+<meta property="og:url" content="https://www.empyrien.com/journey/">
+<meta property="og:image" content="https://www.empyrien.com/assets/og/journey.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@empyrien">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0c0c0e;
-    --ink: #e9e4da;
-    --ink-dim: #8a857b;
-    --ink-faint: #5c5850;
-    --hairline: rgba(233,228,218,0.18);
-    --hairline-soft: rgba(233,228,218,0.08);
-    --gold: #c9b07e;
-    --gold-dim: rgba(201,176,126,0.55);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    background: var(--bg); color: var(--ink);
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-weight: 300;
-    display: flex; flex-direction: column;
-    -webkit-font-smoothing: antialiased;
-  }
-  ::selection { background: rgba(201,176,126,0.25); }
-  a { color: var(--gold); text-decoration: none; }
-
-  .top {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1.4rem 1.6rem; font-size: 0.72rem;
-    letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
-  }
-  .top a { color: var(--ink-dim); }
-  .top a:hover { color: var(--ink); }
-
-  .stage {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    padding: 1.5rem;
-    position: relative;
-  }
-  .stage::before {
-    content: ""; position: absolute; inset: 0;
-    background: radial-gradient(ellipse 55% 45% at 50% 42%, rgba(233,228,218,0.045), transparent 70%);
-    pointer-events: none;
-  }
-
-  .card {
-    max-width: 34rem; width: 100%;
-    text-align: center;
-    opacity: 0; transform: translateY(14px);
-    transition: opacity .7s cubic-bezier(0.22,1,0.36,1), transform .7s cubic-bezier(0.22,1,0.36,1);
-  }
-  .card.vis { opacity: 1; transform: none; }
-
-  .kicker {
-    font-size: 0.68rem; letter-spacing: 0.34em; text-transform: uppercase;
-    color: var(--gold-dim); margin-bottom: 1.5rem;
-  }
-  .card h1 {
-    font-weight: 300; font-size: clamp(1.55rem, 4.6vw, 2.3rem);
-    line-height: 1.35; letter-spacing: 0.02em; margin-bottom: 1.3rem;
-  }
-  .card p {
-    font-size: clamp(1.08rem, 2.4vw, 1.22rem); line-height: 1.75;
-    color: var(--ink-dim); margin-bottom: 1rem;
-  }
-  .card p strong { color: var(--ink); font-weight: 400; }
-  .card blockquote {
-    font-style: italic; font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-    line-height: 1.7; color: var(--ink); margin: 1.4rem 0;
-  }
-  .card blockquote footer {
-    font-style: normal; font-size: 0.85rem; color: var(--ink-dim);
-    letter-spacing: 0.06em; margin-top: 0.8rem;
-  }
-  .spec {
-    display: inline-block; font-size: 0.6rem; letter-spacing: 0.24em;
-    text-transform: uppercase; padding: 0.3em 0.9em;
-    border: 1px solid rgba(201,176,126,0.4); border-radius: 2em;
-    color: var(--gold); margin-bottom: 1.3rem;
-  }
-
-  .actions { margin-top: 2.2rem; display: flex; flex-direction: column; gap: 0.7rem; align-items: center; }
-  .btn {
-    font-family: inherit; font-size: 0.95rem; letter-spacing: 0.14em;
-    background: none; color: var(--ink);
-    border: 1px solid var(--hairline); border-radius: 2em;
-    padding: 0.7em 2.2em; cursor: pointer;
-    transition: border-color .3s, color .3s;
-    max-width: 100%;
-  }
-  .btn:hover { border-color: var(--gold-dim); color: var(--gold); }
-  .btn.primary { border-color: var(--gold-dim); color: var(--gold); }
-  .btn.primary:hover { border-color: var(--gold); }
-  a.btn { display: inline-block; }
-
-  .bottom {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1.2rem 1.6rem 1.6rem; font-size: 0.78rem;
-    letter-spacing: 0.16em; color: var(--ink-faint);
-  }
-  .bottom button {
-    font-family: inherit; font-size: 0.78rem; letter-spacing: 0.16em;
-    background: none; border: none; color: var(--ink-faint); cursor: pointer;
-  }
-  .bottom button:hover { color: var(--ink-dim); }
-  .dots { display: flex; gap: 0.45rem; }
-  .dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--hairline-soft); transition: background .4s; }
-  .dots span.on { background: var(--gold-dim); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .card { transition: none; }
-  }
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Literata:ital,opsz,wght@0,7..72,300..600;1,7..72,300..500&family=Source+Code+Pro:wght@400;500&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.__empyrien)document.documentElement.classList.remove('js')},2500)</script>
+<script src="/assets/site.js" defer></script>
 </head>
-<body>
-
-<div class="top">
-  <a href="/">Empyrien</a>
-  <span id="chapter"></span>
+<body class="journey">
+<div class="sky" aria-hidden="true">
+  <div class="sky-stars"></div>
+  <div class="sky-dusk"></div>
+  <div class="sky-dawn"></div>
+  <canvas class="motes motes--journey" data-horizon="0.92"></canvas>
+  <div class="sky-sun"></div>
 </div>
 
-<div class="stage">
-  <div class="card" id="card"></div>
-</div>
+<header class="topbar topbar--bare">
+  <a class="brand" href="/" aria-label="Empyrien — home">
+    <svg class="brand-star" viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10 L1.92 -5.26 L6.43 -7.66 L4.85 -2.8 L9.85 -1.74 L5.51 0.97 L8.66 5 L3.6 4.29 L3.42 9.4 L0 5.6 L-3.42 9.4 L-3.6 4.29 L-8.66 5 L-5.51 0.97 L-9.85 -1.74 L-4.85 -2.8 L-6.43 -7.66 L-1.92 -5.26 Z"/></svg>
+    <span>Empyrien</span>
+  </a>
+  <span class="chapter" id="chapter"></span>
+</header>
 
-<div class="bottom">
-  <button id="backBtn" style="visibility:hidden">&larr; back</button>
-  <div class="dots" id="dots"></div>
-  <button id="restartBtn">restart</button>
-</div>
+<main class="stage">
+  <div class="jcard" id="card" aria-live="polite"></div>
+  <noscript><div class="jcard vis"><h1>The Journey needs JavaScript.</h1><p>The same story is told, with every source, in <a class="jbtn" href="/vision/">The Vision</a></p></div></noscript>
+</main>
+
+<footer class="journey-bar">
+  <button type="button" class="back" id="backBtn" style="visibility:hidden">&larr; back</button>
+  <div class="jdots" id="dots" aria-hidden="true"></div>
+  <button type="button" class="restart" id="restartBtn">restart</button>
+</footer>
 
 <script>
 const N = {
@@ -295,8 +214,17 @@ end: { ch: "the first principle", h: "One last thing — and it's the most Bahá
 };
 
 const TRUNK_LEN = 9;
+
+// How much light is in the sky at each point: dark until 1844, first light
+// with the Báb, rising through each road, full dawn at the end.
+const LIGHT = { intro: 0, q1: 0.03, q2: 0.06, q3: 0.1, bab: 0.34, bahaullah: 0.46, taught: 0.55, name: 0.62, cross: 0.66, end: 1 };
+[['c1', 'c2', 'c3', 'c4', 'c5'], ['p1', 'p2', 'p3', 'p4', 'p5'], ['t1', 't2', 't2b', 't3', 't4', 't5']].forEach((road) => {
+  road.forEach((id, i) => { LIGHT[id] = 0.7 + 0.24 * i / (road.length - 1); });
+});
+
 let cur = "intro";
 const hist = [];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const card = document.getElementById('card');
 const chapterEl = document.getElementById('chapter');
@@ -305,24 +233,26 @@ const dotsEl = document.getElementById('dots');
 
 for (let i = 0; i < TRUNK_LEN; i++) { const s = document.createElement('span'); dotsEl.appendChild(s); }
 
-function render(id, push) {
+function render(id, push, focus) {
   const n = N[id];
   if (!n) return;
   if (push && cur !== id) hist.push(cur);
   cur = id;
+  document.body.style.setProperty('--p', LIGHT[id] !== undefined ? LIGHT[id] : 0.7);
   card.classList.remove('vis');
   setTimeout(() => {
     let html = '';
-    if (n.spec) html += '<span class="spec">speculation — labeled as such</span>';
-    html += '<h1>' + n.h + '</h1>';
+    if (n.spec) html += '<p class="pill pill--spec">speculation — labeled as such</p>';
+    html += '<h1 tabindex="-1">' + n.h + '</h1>';
     if (n.bq) html += '<blockquote>' + n.bq + '<footer>' + n.bqf + '</footer></blockquote>';
     (n.p || []).forEach(t => html += '<p>' + t + '</p>');
-    html += '<div class="actions">';
-    n.next.forEach(([label, to, primary], i) => {
+    html += '<div class="jactions">';
+    n.next.forEach(([label, to, primary]) => {
+      const cls = 'jbtn' + (primary ? ' primary' : '');
       if (to.startsWith('LINK:')) {
-        html += '<a class="btn' + (primary ? ' primary' : '') + '" href="' + to.slice(5) + '">' + label + '</a>';
+        html += '<a class="' + cls + '" href="' + to.slice(5) + '">' + label + '</a>';
       } else {
-        html += '<button class="btn' + (primary ? ' primary' : '') + '" data-to="' + to + '">' + label + '</button>';
+        html += '<button type="button" class="' + cls + '" data-to="' + to + '">' + label + '</button>';
       }
     });
     html += '</div>';
@@ -333,19 +263,21 @@ function render(id, push) {
       s.classList.toggle('on', n.trunk !== undefined && i <= n.trunk);
     });
     dotsEl.style.visibility = (n.trunk !== undefined) ? 'visible' : 'hidden';
+    window.scrollTo(0, 0);
+    if (focus) card.querySelector('h1').focus({ preventScroll: true });
     requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('vis')));
-  }, 250);
+  }, reduce ? 0 : 250);
 }
 
 card.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-to]');
-  if (b) render(b.dataset.to, true);
+  if (b) render(b.dataset.to, true, true);
 });
-backBtn.addEventListener('click', () => { if (hist.length) { const prev = hist.pop(); render(prev, false); } });
-document.getElementById('restartBtn').addEventListener('click', () => { hist.length = 0; render('intro', false); });
+backBtn.addEventListener('click', () => { if (hist.length) { const prev = hist.pop(); render(prev, false, true); } });
+document.getElementById('restartBtn').addEventListener('click', () => { hist.length = 0; render('intro', false, true); });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' || e.key === ' ') {
-    const first = card.querySelector('.btn.primary') || card.querySelector('button[data-to]');
+    const first = card.querySelector('.jbtn.primary') || card.querySelector('button[data-to]');
     if (first && document.activeElement.tagName !== 'BUTTON' && document.activeElement.tagName !== 'A') {
       e.preventDefault();
       first.click();
@@ -353,7 +285,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-render('intro', false);
+render('intro', false, false);
 </script>
 </body>
 </html>
