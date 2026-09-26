@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<title>Share card</title>
+<!-- Template for the 1200×630 share cards in /assets/og. Rendered by render.mjs;
+     ?kind=home for the landing card, otherwise ?label=…&title=… -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Source+Code+Pro:wght@400&display=block">
+<style>
+  :root { --night: #08090e; --ink: #eee8dc; --ink-2: #bdb5a6; --ink-3: #958d7e; --gold: #dcc08a; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: var(--night); }
+
+  .card {
+    position: relative;
+    width: 1200px; height: 630px;
+    overflow: hidden;
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    --hz: 404px;      /* horizon */
+    --ax: 600px;      /* astrolabe centre */
+    --ay: 300px;
+    --as: 600px;      /* astrolabe size */
+    background:
+      radial-gradient(640px 300px at var(--ax) var(--hz), rgba(240, 194, 123, 0.22), rgba(230, 164, 126, 0.06) 48%, transparent 75%),
+      radial-gradient(900px 420px at var(--ax) var(--hz), rgba(92, 64, 112, 0.22), transparent 72%),
+      linear-gradient(180deg, #05060a 0%, #080a13 40%, #0e0f1c 64%, #0a0a10 82%, #060609 100%);
+  }
+  .horizon {
+    position: absolute; left: 0; right: 0; top: var(--hz); height: 1px;
+    background: linear-gradient(90deg, transparent 4%, rgba(240, 194, 123, 0.55) 50%, transparent 96%);
+  }
+  .horizon::after {
+    content: ""; position: absolute; left: 50%; top: 50%; width: 760px; height: 70px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgba(240, 194, 123, 0.2), transparent);
+  }
+  .astro {
+    position: absolute;
+    width: var(--as); height: var(--as);
+    left: calc(var(--ax) - var(--as) / 2);
+    top: calc(var(--ay) - var(--as) / 2);
+    fill: none; stroke-linecap: round;
+  }
+  .astro .ring { stroke: rgba(238, 232, 220, 0.16); stroke-width: 0.25; }
+  .astro .tick { stroke: rgba(238, 232, 220, 0.22); stroke-width: 2.6; stroke-linecap: butt; }
+  .astro .major { stroke: rgba(220, 192, 138, 0.55); stroke-width: 0.35; }
+  .astro .s2 { stroke: rgba(220, 192, 138, 0.42); stroke-width: 0.3; }
+  .astro .s4 { stroke: rgba(238, 232, 220, 0.1); stroke-width: 0.3; }
+  .astro .tip { fill: var(--gold); stroke: none; }
+
+  .mono { font-family: 'Source Code Pro', ui-monospace, monospace; font-size: 17px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); }
+
+  /* landing card */
+  .home .astro {
+    -webkit-mask-image: radial-gradient(ellipse 58% 18% at 50% 50%, transparent 60%, #000 100%), radial-gradient(circle, transparent 12%, #000 38%);
+    -webkit-mask-composite: source-in;
+  }
+  .home .wordmark {
+    position: absolute; left: 0; right: 0; top: var(--ay); transform: translateY(-50%);
+    text-align: center; font-weight: 300; font-size: 112px; line-height: 1;
+    letter-spacing: 0.3em; padding-left: 0.3em; text-transform: uppercase;
+    text-shadow: 0 0 0.7em rgba(240, 194, 123, 0.22);
+  }
+  .home .whisper {
+    position: absolute; left: 0; right: 0; top: calc(var(--hz) + 22px);
+    text-align: center; font-style: italic; font-weight: 300; font-size: 36px; letter-spacing: 0.08em; color: var(--ink-2);
+  }
+
+  /* page card */
+  .page { --ax: 1010px; --ay: 330px; --as: 640px; --hz: 330px; }
+  .page .horizon { background: linear-gradient(90deg, transparent 48%, rgba(240, 194, 123, 0.5) 82%, transparent 100%); }
+  .page .horizon::after { left: 82%; width: 520px; }
+  .page .astro { opacity: 0.95; }
+  .page .text { position: absolute; left: 84px; top: 0; bottom: 0; width: 590px; display: flex; flex-direction: column; justify-content: center; }
+  .page .label { color: var(--gold); }
+  .page h1 { margin-top: 26px; font-weight: 300; font-size: 70px; line-height: 1.06; letter-spacing: 0.005em; text-wrap: balance; }
+  .page h1.long { font-size: 60px; }
+  .page .brand { position: absolute; left: 84px; bottom: 64px; display: flex; align-items: center; gap: 16px; font-size: 24px; letter-spacing: 0.36em; text-transform: uppercase; }
+  .page .brand svg { width: 24px; height: 24px; fill: var(--gold); }
+  .home .brand, .home .text { display: none; }
+  .page .wordmark, .page .whisper { display: none; }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="horizon"></div>
+  <svg class="astro" viewBox="-100 -100 200 200">
+    <circle class="ring" r="97"/>
+    <circle class="ring" r="89"/>
+    <circle class="tick" r="93.2" stroke-dasharray="0.3 7.833" stroke-dashoffset="0.15"/>
+    <g class="major">
+      <line x1="0" y1="-89" x2="0" y2="-97"/><line x1="0" y1="-89" x2="0" y2="-97" transform="rotate(40)"/><line x1="0" y1="-89" x2="0" y2="-97" transform="rotate(80)"/><line x1="0" y1="-89" x2="0" y2="-97" transform="rotate(120)"/><line x1="0" y1="-89" x2="0" y2="-97" transform="rotate(160)"/><line x1="0" y1="-89" x2="0" y2="-97" transform="rotate(200)"/><line x1="0" y1="-89" x2="0" y2="-97" transform="rotate(240)"/><line x1="0" y1="-89" x2="0" y2="-97" transform="rotate(280)"/><line x1="0" y1="-89" x2="0" y2="-97" transform="rotate(320)"/>
+    </g>
+    <circle class="ring" r="70.11" style="stroke: rgba(238,232,220,.08)"/>
+    <path class="s4" d="M0 -86 L29.41 80.81 L-55.28 -65.88 L74.48 43 L-84.69 -14.93 L84.69 -14.93 L-74.48 43 L55.28 -65.88 L-29.41 80.81 Z"/>
+    <path class="s2" d="M0 -86 L84.69 -14.93 L29.41 80.81 L-74.48 43 L-55.28 -65.88 L55.28 -65.88 L74.48 43 L-29.41 80.81 L-84.69 -14.93 Z"/>
+    <g><circle class="tip" cx="0" cy="-86" r="1.1"/><circle class="tip" cx="55.28" cy="-65.88" r="1.1"/><circle class="tip" cx="84.69" cy="-14.93" r="1.1"/><circle class="tip" cx="74.48" cy="43" r="1.1"/><circle class="tip" cx="29.41" cy="80.81" r="1.1"/><circle class="tip" cx="-29.41" cy="80.81" r="1.1"/><circle class="tip" cx="-74.48" cy="43" r="1.1"/><circle class="tip" cx="-84.69" cy="-14.93" r="1.1"/><circle class="tip" cx="-55.28" cy="-65.88" r="1.1"/></g>
+  </svg>
+
+  <div class="wordmark">Empyrien</div>
+  <div class="whisper">you found us</div>
+
+  <div class="text">
+    <p class="label mono" id="label"></p>
+    <h1 id="title"></h1>
+  </div>
+  <div class="brand"><svg viewBox="-10 -10 20 20"><path d="M0 -10 L1.92 -5.26 L6.43 -7.66 L4.85 -2.8 L9.85 -1.74 L5.51 0.97 L8.66 5 L3.6 4.29 L3.42 9.4 L0 5.6 L-3.42 9.4 L-3.6 4.29 L-8.66 5 L-5.51 0.97 L-9.85 -1.74 L-4.85 -2.8 L-6.43 -7.66 L-1.92 -5.26 Z"/></svg>Empyrien</div>
+</div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const card = document.getElementById('card');
+  if (q.get('kind') === 'home') {
+    card.classList.add('home');
+  } else {
+    card.classList.add('page');
+    document.getElementById('label').textContent = q.get('label') || '';
+    const t = document.getElementById('title');
+    t.textContent = q.get('title') || '';
+    if (t.textContent.length > 60) t.classList.add('long');
+  }
+</script>
+</body>
+</html>
