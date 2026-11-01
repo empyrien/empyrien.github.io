@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Empyrien</title>
+  <meta name="description" content="Empyrien">
+  <meta name="theme-color" content="#f4f3ef">
+  <link rel="canonical" href="https://www.empyrien.com/">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Empyrien">
+  <meta property="og:title" content="Empyrien">
+  <meta property="og:description" content="Empyrien">
+  <meta property="og:url" content="https://www.empyrien.com/">
+  <meta name="twitter:card" content="summary">
+  <style>
+    :root { color-scheme: light; --paper: #f4f3ef; --ink: #2e3231; --muted: #626966; --line: #d7dad5; }
+    * { box-sizing: border-box; }
+    html { min-width: 280px; background: var(--paper); }
+    body { margin: 0; min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; padding: 0 clamp(24px, 5.5vw, 88px); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible { outline: 2px solid var(--ink); outline-offset: 8px; border-radius: 1px; }
+    .masthead { height: 112px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); }
+    .monogram { font-family: "Baskerville", "Palatino Linotype", Georgia, serif; font-size: 28px; line-height: 1; }
+    .address, .footer { font-size: 11px; line-height: 1.6; letter-spacing: .1em; }
+    .address { color: var(--muted); }
+    main { min-height: 440px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 72px 0 88px; text-align: center; }
+    .mark { width: 52px; height: 1px; background: #89978c; margin-bottom: 43px; }
+    h1 { margin: 0; font-family: "Baskerville", "Palatino Linotype", Georgia, serif; font-size: clamp(64px, 10vw, 156px); font-weight: 400; line-height: 1.14; letter-spacing: -.055em; padding-right: .055em; }
+    .footer { min-height: 94px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 24px; color: var(--muted); }
+    .footer p { margin: 0; }
+    .social { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; transition: color .15s ease; }
+    .social:hover { color: var(--ink); }
+    .social span { font-size: 17px; letter-spacing: 0; }
+    @media (max-width: 540px) {
+      .masthead { height: 84px; }
+      main { min-height: 400px; padding: 64px 0 80px; }
+      .mark { width: 38px; margin-bottom: 32px; }
+      .footer { min-height: 86px; font-size: 10px; letter-spacing: .04em; gap: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .social { transition: none; } }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <span class="monogram" aria-hidden="true">E.</span>
+    <span class="address">empyrien.com</span>
+  </header>
+  <main>
+    <span class="mark" aria-hidden="true"></span>
+    <h1>Empyrien</h1>
+  </main>
+  <footer class="footer">
+    <p>© 2026 Empyrien</p>
+    <a class="social" href="https://x.com/empyrien" aria-label="Follow @empyrien on X">@empyrien <span aria-hidden="true">↗</span></a>
+  </footer>
+</body>
+</html>

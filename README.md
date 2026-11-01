@@ -1,5 +1,7 @@
 # empyrien.com
 
+> **Current publication (2026-11-01):** Vercel serves only `holding/`, a minimal Empyrien placeholder with no subtitle. The former faith website below is preserved in source for a future move, but its pages and assets are excluded from the production output. The original site is also preserved at commit `6a01fb657e447d31d67983b85b9d5be617fa8c6c`.
+
 Static site — no framework, no build step. Pushing to `main` deploys (Vercel).
 
 ## Structure
